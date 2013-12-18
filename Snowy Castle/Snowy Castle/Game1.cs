@@ -20,7 +20,9 @@ namespace Snowy_Castle
         private int score;
 
         //time
+        private int counterTime = 0;
         private int elapsedTime = 0;
+        private int secondTime = 1000;
         private int spawnTime = 2000;
 
         //background
@@ -42,7 +44,10 @@ namespace Snowy_Castle
         //text
         SpriteFont periclesFont;
         Vector2 textPosition = new Vector2(10, 10);
+        Vector2 textPosition2 = new Vector2(10, 40);
         String textString = "Hit by: ";
+        String textString2 = "Time left: "; 
+        int countdown = 20;
         SoundEffectInstance impactInstance;
 
         public Game1()
@@ -112,12 +117,26 @@ namespace Snowy_Castle
         {
             Random rand = new Random();
             elapsedTime += gameTime.ElapsedGameTime.Milliseconds;
+            counterTime += gameTime.ElapsedGameTime.Milliseconds;
 
             if (elapsedTime > spawnTime)
             {
                 elapsedTime -= spawnTime;
                 sbs.Add(CreateSb());
-                spawnTime = rand.Next(500, 3000);
+                spawnTime = rand.Next(300, 2000);
+            }
+
+            if (counterTime > secondTime)
+            {
+                counterTime -= secondTime;
+                if (countdown > 0)
+                {
+                    countdown--;
+                }
+                else
+                {
+                    countdown = 0;
+                }
             }
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
@@ -171,6 +190,7 @@ namespace Snowy_Castle
             spriteBatch.Begin();
             spriteBatch.Draw(background, viewportRect, Color.White);
             spriteBatch.DrawString(periclesFont, (textString + score + " snowballs"), textPosition, Color.Red);
+            spriteBatch.DrawString(periclesFont, (textString2 + countdown), textPosition2, Color.Red);
 
             foreach (Sprite s in sbs)
             {
