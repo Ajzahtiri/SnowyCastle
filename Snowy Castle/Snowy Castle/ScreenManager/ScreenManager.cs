@@ -67,8 +67,8 @@ namespace Snowy_Castle
             ContentManager content = Game.Content;
 
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            font = content.Load<SpriteFont>("menufont");
-            blankTexture = content.Load<Texture2D>("blank");
+        //    font = content.Load<SpriteFont>("pericles");
+       //     blankTexture = content.Load<Texture2D>("blank");
 
             foreach (GameScreen screen in screens)
             {
