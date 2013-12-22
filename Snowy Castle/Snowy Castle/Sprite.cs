@@ -16,6 +16,7 @@ namespace Snowy_Castle
         private bool facingBackwards;
         protected bool hasCollided;
         protected bool hasLanded;
+        protected bool hasPlayed;
 
         public Rectangle BoundingBox
         {
@@ -43,6 +44,16 @@ namespace Snowy_Castle
             return hasCollided;
         }
 
+        public bool getPlayed()
+        {
+            return hasPlayed;
+        }
+
+        public void setPlayed()
+        {
+            this.hasPlayed = true;
+        }
+
         public bool getLanded()
         {
             return hasLanded;
@@ -53,9 +64,9 @@ namespace Snowy_Castle
             this.hasCollided = true;
         }
 
-        public void setLanded()
+        public void setLanded(Boolean b)
         {
-            this.hasLanded = true;
+            this.hasLanded = b;
         }
          
         public virtual bool CollidesWith(Sprite sprite)
@@ -99,7 +110,7 @@ namespace Snowy_Castle
                 velocity.Y *= 0;
                 velocity.X *= 0;
                 screenPos.Y = viewportRect.Bottom - sourceRect.Height / 2;
-                setLanded();
+                setLanded(true);
                 velocity.X = 0;
 
             }

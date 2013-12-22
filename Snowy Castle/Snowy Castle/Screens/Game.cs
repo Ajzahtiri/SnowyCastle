@@ -11,13 +11,14 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Snowy_Castle
 {
-    public class Game1 : Microsoft.Xna.Framework.Game
+    public class Game : Microsoft.Xna.Framework.Game
     {
         //logic
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Rectangle viewportRect;
         private int score;
+        private bool death;
 
         //time
         private int counterTime = 0;
@@ -34,6 +35,8 @@ namespace Snowy_Castle
 
         //snowballs
         private List<Sprite> sbs;
+        private List<Sprite> inactive;
+        private List<Sprite> hit;
         private Texture2D sbTex;
 
         //sounds
@@ -50,7 +53,7 @@ namespace Snowy_Castle
         int countdown = 20;
         SoundEffectInstance impactInstance;
 
-        public Game1()
+        public Game()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -70,6 +73,8 @@ namespace Snowy_Castle
 
             //snowballs
             sbs = new List<Sprite>(1000);
+            inactive = new List<Sprite>(1000);
+            hit = new List<Sprite>(1000);
             sbTex = Content.Load<Texture2D>("Textures\\Snowball");
             sbs.Add(CreateSb());
             
@@ -149,12 +154,6 @@ namespace Snowy_Castle
                 s.Update(gameTime, viewportRect);
                 if (s != pSprite)
                 {
-                    if (s.getLanded())
-                    {
-                        //doesn't stop playing
-                      //  impactInstance.Play();
-                    }
-
                     if (s.CollidesWith(pSprite))
                     {
                         if (!s.getLanded() && !s.getCollided())
@@ -162,7 +161,15 @@ namespace Snowy_Castle
                             score++;
                             ouch.Play();
                             s.setCollided();
+                            hit.Add(s);
                         }  
+                    }
+
+                    if (s.getLanded() && !s.getPlayed())
+                    {
+                        impactInstance.Play();
+                        inactive.Add(s);
+                        s.setPlayed();
                     }
 
                     if (!s.getLanded())
@@ -177,6 +184,26 @@ namespace Snowy_Castle
                             s.decVelX();
                         }
                     }
+                }
+                
+            }
+
+            foreach (Sprite s in hit)
+            {
+                sbs.Remove(s);
+            }
+
+            foreach (Sprite s in inactive)
+            {
+               
+            }
+
+            if (!death)
+            {
+                if (score >= 5)
+                {
+                    lose.Play();
+                    death = true;
                 }
             }
 
