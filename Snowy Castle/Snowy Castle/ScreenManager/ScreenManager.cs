@@ -15,8 +15,8 @@ namespace Snowy_Castle
         InputState input = new InputState();
 
         SpriteBatch spriteBatch;
-        SpriteFont font;
-        Texture2D blankTexture;
+        public SpriteFont font;
+        Texture2D background;
 
         bool isInitialized;
 
@@ -67,8 +67,8 @@ namespace Snowy_Castle
             ContentManager content = Game.Content;
 
             spriteBatch = new SpriteBatch(GraphicsDevice);
-        //    font = content.Load<SpriteFont>("pericles");
-       //     blankTexture = content.Load<Texture2D>("blank");
+            font = content.Load<SpriteFont>("Fonts\\Pericles");
+            background = content.Load<Texture2D>("Textures\\Winter_Castle");
 
             foreach (GameScreen screen in screens)
             {
@@ -187,11 +187,7 @@ namespace Snowy_Castle
             Viewport viewport = GraphicsDevice.Viewport;
 
             spriteBatch.Begin();
-
-            spriteBatch.Draw(blankTexture,
-                             new Rectangle(0, 0, viewport.Width, viewport.Height),
-                             Color.Black * alpha);
-
+            spriteBatch.Draw(background, new Rectangle(0, 0, viewport.Width, viewport.Height), Color.Black * alpha);
             spriteBatch.End();
         }
     }

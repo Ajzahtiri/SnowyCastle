@@ -64,7 +64,6 @@
       <Processor>SoundEffectProcessor</Processor>
     </Compile>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Compile Include="Fonts\Pericles.spritefont">
       <Name>Pericles</Name>

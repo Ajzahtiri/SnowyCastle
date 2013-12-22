@@ -107,9 +107,7 @@ namespace Snowy_Castle
         {
             get
             {
-                return !otherScreenHasFocus &&
-                       (screenState == ScreenState.TransitionOn ||
-                        screenState == ScreenState.Active);
+                return !otherScreenHasFocus && (screenState == ScreenState.TransitionOn || screenState == ScreenState.Active);
             }
         }
 
@@ -213,7 +211,10 @@ namespace Snowy_Castle
             return true;
         }
 
-        public virtual void HandleInput(InputState input) { }
+        public virtual void HandleInput(InputState input) 
+        { 
+
+        }
 
 
         public virtual void Draw(GameTime gameTime) { }
