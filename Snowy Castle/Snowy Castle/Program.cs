@@ -10,16 +10,16 @@ namespace Snowy_Castle
         GraphicsDeviceManager graphics;
         ScreenManager screenManager;
 
-
         public Program()
         {
             Content.RootDirectory = "Content";
             graphics = new GraphicsDeviceManager(this);
-            graphics.PreferredBackBufferWidth = 853;
-            graphics.PreferredBackBufferHeight = 480;
+            graphics.PreferredBackBufferWidth = 648;
+            graphics.PreferredBackBufferHeight = 486;
             screenManager = new ScreenManager(this);
             Components.Add(screenManager);
-            screenManager.AddScreen(new GameplayScreen(), null);
+            screenManager.AddScreen(new BackgroundScreen(), null);
+            screenManager.AddScreen(new MainMenu(), null);
         }
 
         protected override void LoadContent()
@@ -31,7 +31,6 @@ namespace Snowy_Castle
         {
             graphics.GraphicsDevice.Clear(Color.Black);
 
-            // The real drawing happens inside the screen manager component.
             base.Draw(gameTime);
         }
         
