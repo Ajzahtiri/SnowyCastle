@@ -13,10 +13,31 @@ namespace Snowy_Castle
         protected Vector2 centre, velocity, screenPos;
         protected Rectangle sourceRect;
         protected float size;
-        private bool facingBackwards;
+        private bool facingBackwards = true;
         protected bool hasCollided;
         protected bool hasLanded;
         protected bool hasPlayed;
+
+       
+        public Sprite(Texture2D tex, Vector2 centre, Vector2 pos, Rectangle sourceRect, Vector2 vel)
+        {
+            texture = tex;
+            this.centre = centre;
+            this.screenPos = pos;
+            this.sourceRect = sourceRect;
+            this.velocity = vel;
+            this.size = 1;
+        }
+
+        public Sprite(Texture2D tex, Vector2 centre, Vector2 pos, Rectangle sourceRect, Vector2 vel, float size)
+        {
+            texture = tex;
+            this.centre = centre;
+            this.screenPos = pos;
+            this.sourceRect = sourceRect;
+            this.velocity = vel;
+            this.size = size;
+        }
 
         public Rectangle BoundingBox
         {
@@ -68,31 +89,12 @@ namespace Snowy_Castle
         {
             this.hasLanded = b;
         }
-         
+
         public virtual bool CollidesWith(Sprite sprite)
         {
             return this.BoundingBox.Intersects(sprite.BoundingBox);
         }
 
-        public Sprite(Texture2D tex, Vector2 centre, Vector2 pos, Rectangle sourceRect, Vector2 vel)
-        {
-            texture = tex;
-            this.centre = centre;
-            this.screenPos = pos;
-            this.sourceRect = sourceRect;
-            this.velocity = vel;
-            this.size = 1;
-        }
-
-        public Sprite(Texture2D tex, Vector2 centre, Vector2 pos, Rectangle sourceRect, Vector2 vel, float size)
-        {
-            texture = tex;
-            this.centre = centre;
-            this.screenPos = pos;
-            this.sourceRect = sourceRect;
-            this.velocity = vel;
-            this.size = size;
-        }
 
         public virtual void Update(GameTime gameTime, Rectangle viewportRect)
         {

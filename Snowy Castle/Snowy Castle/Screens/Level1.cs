@@ -29,6 +29,7 @@ namespace Snowy_Castle
         private int secondTime = 1000;
         private int spawnTime = 2000;
 
+
         //background
         Texture2D background;
 
@@ -175,8 +176,10 @@ namespace Snowy_Castle
                                 ouch.Play();
                                 s.setCollided();
                                 hit.Add(s);
+                                GamePad.SetVibration(PlayerIndex.One, 1, 1);                                
                             }
-                        }
+                        }                       
+                        GamePad.SetVibration(PlayerIndex.One, 0, 0);
 
                         if (s.getLanded() && !s.getPlayed())
                         {

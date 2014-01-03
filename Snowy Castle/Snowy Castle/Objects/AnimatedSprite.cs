@@ -12,7 +12,16 @@ namespace Snowy_Castle
         private int currentFrame;
         private int elapsedTime = 0;
         private int setTime = 75;
+        private int level = 1;
 
+        //level 2
+        public AnimatedSprite(Texture2D tex, Vector2 centre, Vector2 pos, Rectangle sourceRect, Vector2 vel)
+            : base(tex, centre, pos, sourceRect, vel)
+        {
+            level = 2;
+        }
+
+        //level 1
         public AnimatedSprite(Texture2D tex, Vector2 centre, Vector2 pos, Rectangle sourceRect, Vector2 vel, int rows, int columns, int frames)
             : base(tex, centre, pos, sourceRect, vel)
         {
@@ -20,20 +29,24 @@ namespace Snowy_Castle
             this.columns = columns;
             this.frames = frames;
             currentFrame = -1;
+            level = 1;
         }
 
         public override void Update(GameTime gameTime, Rectangle viewportRect)
         {
             elapsedTime += gameTime.ElapsedGameTime.Milliseconds;
-            if (elapsedTime > setTime)
+            if (level == 1)
             {
-                elapsedTime -= setTime;
-                currentFrame++;
-                currentFrame %= frames;
+                if (elapsedTime > setTime)
+                {
+                    elapsedTime -= setTime;
+                    currentFrame++;
+                    currentFrame %= frames;
+                }
+
+                sourceRect.X = (currentFrame % columns) * sourceRect.Width;
+                sourceRect.Y = (currentFrame / columns) * sourceRect.Height;
             }
-            
-            sourceRect.X = (currentFrame % columns) * sourceRect.Width;
-            sourceRect.Y = (currentFrame / columns) * sourceRect.Height;
             
             ProcessInput();
             base.Update(gameTime, viewportRect);
