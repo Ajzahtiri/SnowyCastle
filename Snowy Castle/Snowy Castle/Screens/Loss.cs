@@ -9,7 +9,7 @@ namespace Snowy_Castle
     {
         public Loss() : base("You didn't make it! Swamped by Snowballs!")
         {
-            MenuItem i1 = new MenuItem("Retry Level 1!");
+            MenuItem i1 = new MenuItem("Retry (from Level 1)");
             MenuItem i2 = new MenuItem("Tunnel out! (to the Main Menu)");
 
             i1.Selected += toLevel1;

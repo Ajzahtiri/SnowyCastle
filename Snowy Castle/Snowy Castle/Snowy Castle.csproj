@@ -73,6 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Objects\AnimatedSprite.cs" />
+    <Compile Include="Objects\Background.cs" />
     <Compile Include="ScreenManager\Background.cs" />
     <Compile Include="ScreenManager\GameScreen.cs" />
     <Compile Include="ScreenManager\InputState.cs" />

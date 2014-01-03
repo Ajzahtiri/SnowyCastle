@@ -30,12 +30,12 @@ namespace Snowy_Castle
         private int secondTime = 1000;
         private int spawnTime = 2000;
 
-        //background
-        Texture2D background;
-
         //player
         Texture2D pTex;
         Sprite pSprite;
+
+        //background
+        private Background background;
 
         //snowballs
         private List<Sprite> sbs, inactive, hit;
@@ -69,8 +69,11 @@ namespace Snowy_Castle
 
             //background
             spriteBatch = new SpriteBatch(ScreenManager.GraphicsDevice);
-            background = content.Load<Texture2D>("Textures\\space");
+            background = new Background();
+            Texture2D bg = content.Load<Texture2D>("Textures\\space");
+            background.Load(ScreenManager.GraphicsDevice, bg);
             viewportRect = new Rectangle(0, 0, ScreenManager.GraphicsDevice.Viewport.Width, ScreenManager.GraphicsDevice.Viewport.Height);
+
 
             //enemies
             sbs = new List<Sprite>(1000);
@@ -138,6 +141,7 @@ namespace Snowy_Castle
         {
             base.Update(gameTime, otherScreenHasFocus, false);
 
+            background.Update(2);
             if (coveredByOtherScreen)
             {
                 pauseGradient = Math.Min(pauseGradient + 1f / 32, 1);
@@ -227,7 +231,7 @@ namespace Snowy_Castle
             ScreenManager.GraphicsDevice.Clear(Color.CornflowerBlue);
 
             spriteBatch.Begin();
-            spriteBatch.Draw(background, viewportRect, Color.White);
+            background.Draw(spriteBatch);
             spriteBatch.DrawString(periclesFont, (scoreString + score), textPosition, Color.Red);
             spriteBatch.DrawString(periclesFont, (livesString + lives), textPosition2, Color.Red);
 
