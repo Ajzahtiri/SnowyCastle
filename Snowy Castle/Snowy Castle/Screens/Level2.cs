@@ -22,7 +22,6 @@ namespace Snowy_Castle
         ContentManager content;
         private int score;
         private int lives = 5;
-        private bool death;
         float pauseGradient;
 
         //time
@@ -39,9 +38,11 @@ namespace Snowy_Castle
         //background
         private Background background;
 
-        //snowballs
-        private List<L2Sprite> sbs, inactive, hit;
+        //textures        
         private Texture2D eTex;
+
+        //lists 
+        private List<L2Sprite> sbs, inactive, hit;
 
         //sounds
         private SoundEffect impact, ouch, lose;
@@ -87,6 +88,8 @@ namespace Snowy_Castle
             {
                 sbs.Add(CreateEnemy());
             }
+
+            List<Bullet> allBullets = new List<Bullet>();
 
             //player
             pTex = content.Load<Texture2D>("Textures\\pSpaceship");
@@ -177,11 +180,10 @@ namespace Snowy_Castle
                     }
                 }
 
-
+                //check for death
                 if (lives <= 0)
                 {
                     lose.Play();
-                    death = true;
                     ScreenManager.AddScreen(new Loss(), null);
                 }
 
@@ -192,7 +194,7 @@ namespace Snowy_Castle
 
                 foreach (L2Sprite s in inactive)
                 {
-
+                    sbs.Remove(s);
                 }
             }
         }

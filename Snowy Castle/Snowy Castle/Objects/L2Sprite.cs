@@ -170,5 +170,10 @@ namespace Snowy_Castle
         {
             this.velocity.Y = y;
         }
+
+        public Vector2 getVel()
+        {
+            return velocity;
+        }
     }
 }
