@@ -27,9 +27,11 @@ namespace Snowy_Castle
         //time
         private int elapsedTime = 0;
         private int elapsedTime2 = 0;
+        private int elapsedTime3 = 0;
         private int secondTime = 1000;
         private int spawnTime = 1;
         private int timeLeft = 600;
+        private int rotationTime;
 
         //player
         Texture2D pTex;
@@ -43,6 +45,8 @@ namespace Snowy_Castle
 
         //lists 
         private List<L2Sprite> sbs, inactive, hit;
+        private List<Bullet> allBullets = new List<Bullet>(100);
+        private List<Bullet> deadBullets = new List<Bullet>(10000000);
 
         //sounds
         private SoundEffect impact, ouch, lose;
@@ -88,8 +92,6 @@ namespace Snowy_Castle
             {
                 sbs.Add(CreateEnemy());
             }
-
-            List<Bullet> allBullets = new List<Bullet>();
 
             //player
             pTex = content.Load<Texture2D>("Textures\\pSpaceship");
@@ -165,6 +167,10 @@ namespace Snowy_Castle
                 foreach (L2Sprite s in sbs)
                 {
                     s.Update(gameTime, viewportRect);
+                    elapsedTime3 += gameTime.ElapsedGameTime.Milliseconds;
+                    rotationTime = rand.Next(1, 4);
+                 
+
                     if (s != pSprite)
                     {
                         if (s.CollidesWith(pSprite))
@@ -175,6 +181,24 @@ namespace Snowy_Castle
                                 ouch.Play();
                                 s.setCollided();
                                 hit.Add(s);
+                            }
+                        }
+
+                        foreach (Bullet b in allBullets)
+                        {
+                            if (b.isVisible)
+                            {
+                                if (b.CollidesWith(s))
+                                {
+                                    s.minusHealth();
+                                    if (s.getHealth() <= 0)
+                                    {
+                                        s.setCollided();
+                                        hit.Add(s);
+                                        score += 25;
+                                    }
+                                    deadBullets.Add(b);
+                                }
                             }
                         }
                     }
@@ -196,6 +220,47 @@ namespace Snowy_Castle
                 {
                     sbs.Remove(s);
                 }
+
+                foreach (Bullet b in deadBullets)
+                {
+                    allBullets.Remove(b);
+                }
+            }
+
+            UpdateBullets();
+        }
+
+        public void UpdateBullets()
+        {
+            foreach (Bullet b in allBullets)
+            {
+                b.screenPos += b.velocity;
+                if (Vector2.Distance(b.screenPos, pSprite.getPos()) > 600)
+                {
+                    b.isVisible = false;
+                }
+            }
+
+            for (int i = 0; i < allBullets.Count; i++)
+            {
+                if (!allBullets[i].isVisible)
+                {
+                    allBullets.RemoveAt(i);
+                    i--;
+                }
+            }
+        }
+
+        public void PlayerShoot()
+        {
+            Bullet newBullet = new Bullet((content.Load<Texture2D>("Textures\\pBullet")));
+            newBullet.velocity = new Vector2((float)Math.Sin(rotation), (float)Math.Cos(rotation)) * new Vector2(5f, -5f) + pSprite.getVel();
+            newBullet.screenPos = pSprite.getPos() + newBullet.velocity * 5;
+            newBullet.isVisible = true;
+
+            if (allBullets.Count < 100)
+            {
+                allBullets.Add(newBullet);
             }
         }
 
@@ -210,6 +275,11 @@ namespace Snowy_Castle
 
             }
 
+            if (keyboardState.IsKeyDown(Keys.Space) || gamePadState.Triggers.Right > 0)
+            {
+                PlayerShoot();
+            }
+
             if (keyboardState.IsKeyDown(Keys.Left) || gamePadState.ThumbSticks.Right.X < 0)
             {
                 if (rotation < -0.8)
@@ -218,7 +288,7 @@ namespace Snowy_Castle
                 }
                 else
                 {
-                    rotation -= 0.1f;
+                    rotation -= 0.05f;
                 }
             }
 
@@ -230,7 +300,7 @@ namespace Snowy_Castle
                 }
                 else
                 {
-                    rotation += 0.1f;
+                    rotation += 0.05f;
                 }
             }
         }
@@ -258,6 +328,13 @@ namespace Snowy_Castle
                     s.Draw(gameTime, spriteBatch, Color.White);
                 }
             }
+
+            foreach (Bullet b in allBullets)
+            {
+                b.Draw(spriteBatch);
+                b.Update(gameTime, viewportRect);                
+            }
+          
             spriteBatch.End();
 
             base.Draw(gameTime);

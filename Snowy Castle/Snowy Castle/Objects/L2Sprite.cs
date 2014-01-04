@@ -7,10 +7,12 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Snowy_Castle
 {
-    class L2Sprite
+    public class L2Sprite
     {
         protected Texture2D texture;
+        protected int health = 10;
         protected Vector2 centre, velocity, screenPos;
+        public float rotation;
         protected Rectangle sourceRect;
         protected float size;
         private bool facingBackwards = true;
@@ -24,6 +26,7 @@ namespace Snowy_Castle
             texture = tex;
             this.centre = centre;
             this.screenPos = pos;
+            rotation = 0;
             this.sourceRect = sourceRect;
             this.velocity = vel;
             this.size = 1;
@@ -38,6 +41,27 @@ namespace Snowy_Castle
                     (int)Math.Round(screenPos.Y) - sourceRect.Height / 2,
                     sourceRect.Width, sourceRect.Height);
             }
+        }
+
+        public void setRotation(float f)
+        {
+            this.rotation += f;
+        }
+
+
+        public float getRotation()
+        {
+            return rotation;
+        }
+
+        public void minusHealth()
+        {
+            health--;
+        }
+
+        public int getHealth()
+        {
+            return health;
         }
 
         public void setBackwards(bool b)
@@ -136,14 +160,7 @@ namespace Snowy_Castle
 
         public virtual void Draw(GameTime gameTime, SpriteBatch sb, Color col)
         {
-            if (!facingBackwards)
-            {
-                sb.Draw(texture, screenPos, sourceRect, col, 0.0f, centre, this.size, SpriteEffects.FlipHorizontally, 0);
-            }
-            else
-            {
-                sb.Draw(texture, screenPos, sourceRect, col, 0.0f, centre, this.size, SpriteEffects.None, 0);
-            }
+            sb.Draw(texture, screenPos, sourceRect, col, rotation, centre, this.size, SpriteEffects.None, 0);
         }
 
         public Vector2 getPos()

@@ -95,8 +95,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\bullet.png">
-      <Name>bullet</Name>
+    <Compile Include="Textures\eBullet.png">
+      <Name>eBullet</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Textures\pBullet.png">
+      <Name>pBullet</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

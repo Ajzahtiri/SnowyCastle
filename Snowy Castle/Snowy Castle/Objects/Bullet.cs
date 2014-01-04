@@ -12,16 +12,52 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Snowy_Castle
 {
-    class Bullet
+    public class Bullet
     {
-        public bool alive = false;
         public Texture2D texture;
-        public Vector2 centre, velocity, screenPos;
+        public Vector2 screenPos;
         public Rectangle sourceRect;
+        public Vector2 velocity;
+        public Vector2 origin;
+        public bool isVisible;
 
-        public Bullet()
+        public Bullet(Texture2D newTexture)
         {
+            texture = newTexture;
+            origin = new Vector2(texture.Width / 2, texture.Height / 2);
+            isVisible = false;
+        }
 
+        public virtual void Update(GameTime gameTime, Rectangle viewportRect)
+        {
+            screenPos += velocity;
+            //right
+            if (screenPos.X + sourceRect.Width / 2 > viewportRect.Right)
+            {
+                // velocity.X *= -1;
+                screenPos.X = viewportRect.Left + sourceRect.Width / 2;
+            }
+
+            //bottom
+            if (screenPos.Y > viewportRect.Bottom)
+            {
+                velocity.Y *= 0;
+                velocity.X *= 0;
+                screenPos.Y = viewportRect.Height + 50;
+
+            }
+
+            //left
+            if (screenPos.X < viewportRect.Left + sourceRect.Width / 2)
+            {
+                //  velocity.X *= -1;
+                screenPos.X = viewportRect.Right - sourceRect.Width / 2;
+            }
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(texture, screenPos, null, Color.White, 0.0f, origin, 1f, SpriteEffects.None, 1);
         }
 
         public Rectangle BoundingBox
@@ -38,59 +74,6 @@ namespace Snowy_Castle
         public virtual bool CollidesWith(L2Sprite sprite)
         {
             return this.BoundingBox.Intersects(sprite.BoundingBox);
-        }
-
-        public virtual void Update(GameTime gameTime, Rectangle viewportRect)
-        {
-            screenPos += velocity;
-            //right
-            if (screenPos.X + sourceRect.Width / 2 > viewportRect.Right)
-            {
-                screenPos.X = viewportRect.Left + sourceRect.Width / 2;
-            }
-
-            //left
-            if (screenPos.X < viewportRect.Left + sourceRect.Width / 2)
-            {
-                screenPos.X = viewportRect.Right - sourceRect.Width / 2;
-            }
-
-            //top
-            if (screenPos.Y < viewportRect.Top + sourceRect.Width / 2)
-            {
-                screenPos.Y = viewportRect.Top + sourceRect.Width / 2;
-                alive = false;
-            }
-        }
-
-        public virtual void Draw(GameTime gameTime, SpriteBatch sb, Color col)
-        {
-            sb.Draw(texture, screenPos, sourceRect, col, 0.0f, centre, 1, SpriteEffects.None, 0);
-        }
-
-        public Vector2 getPos()
-        {
-            return screenPos;
-        }
-
-        public void setVelocityX(int x)
-        {
-            this.velocity.X = x;
-        }
-
-        public void incVelX()
-        {
-            this.velocity.X += 0.02f;
-        }
-
-        public void decVelX()
-        {
-            this.velocity.X -= 0.02f;
-        }
-
-        public void setVelocityY(int y)
-        {
-            this.velocity.Y = y;
         }
     }
 }
