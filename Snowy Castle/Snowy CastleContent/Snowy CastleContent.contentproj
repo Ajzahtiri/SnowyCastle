@@ -72,22 +72,16 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\pSnowball.png">
-      <Name>pSnowball</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <ProcessorParameters_ColorKeyColor>255, 255, 0, 255</ProcessorParameters_ColorKeyColor>
-    </Compile>
-    <Compile Include="Textures\rock1.png">
-      <Name>rock1</Name>
+    <Compile Include="Textures\pSpaceship.png">
+      <Name>pSpaceship</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
       <ProcessorParameters_ColorKeyColor>255, 255, 0, 255</ProcessorParameters_ColorKeyColor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Textures\rock2.png">
-      <Name>rock2</Name>
+    <Compile Include="Textures\eSpaceship.png">
+      <Name>eSpaceship</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
       <ProcessorParameters_ColorKeyColor>255, 255, 0, 255</ProcessorParameters_ColorKeyColor>

@@ -30,7 +30,7 @@ namespace Snowy_Castle
                 setBackwards(true);
             }
 
-            velocity.X += gamePadState.ThumbSticks.Left.X;
+            velocity.X += (gamePadState.ThumbSticks.Left.X / 2);
 
 
             #if !XBOX
@@ -38,12 +38,12 @@ namespace Snowy_Castle
             
             if (keyboardState.IsKeyDown(Keys.A))
             {
-                velocity.X -= 1.0f;
+                velocity.X -= 0.5f;
                 setBackwards(true);
             }
             if (keyboardState.IsKeyDown(Keys.D))
             {
-                velocity.X += 1.0f;
+                velocity.X += 0.5f;
                 setBackwards(false);
 
             }

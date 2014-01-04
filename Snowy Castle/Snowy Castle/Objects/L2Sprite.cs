@@ -29,16 +29,6 @@ namespace Snowy_Castle
             this.size = 1;
         }
 
-        public L2Sprite(Texture2D tex, Vector2 centre, Vector2 pos, Rectangle sourceRect, Vector2 vel, float size)
-        {
-            texture = tex;
-            this.centre = centre;
-            this.screenPos = pos;
-            this.sourceRect = sourceRect;
-            this.velocity = vel;
-            this.size = size;
-        }
-
         public Rectangle BoundingBox
         {
             get
@@ -107,13 +97,11 @@ namespace Snowy_Castle
             }
 
             //bottom
-            if (screenPos.Y + sourceRect.Height / 2 > viewportRect.Bottom)
+            if (screenPos.Y > viewportRect.Bottom)
             {
                 velocity.Y *= 0;
                 velocity.X *= 0;
-                screenPos.Y = viewportRect.Bottom - sourceRect.Height / 2;
-                setLanded(true);
-                velocity.X = 0;
+                screenPos.Y = viewportRect.Height + 50;
 
             }
 

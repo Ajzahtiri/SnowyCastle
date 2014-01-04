@@ -40,7 +40,7 @@ namespace Snowy_Castle
 
         //snowballs
         private List<L2Sprite> sbs, inactive, hit;
-        private Texture2D eTex, e1, e2;
+        private Texture2D eTex;
 
         //sounds
         private SoundEffect impact, ouch, lose;
@@ -79,15 +79,14 @@ namespace Snowy_Castle
             sbs = new List<L2Sprite>(1000);
             inactive = new List<L2Sprite>(1000);
             hit = new List<L2Sprite>(1000);
-            e1 = content.Load<Texture2D>("Textures\\rock1");
-            e2 = content.Load<Texture2D>("Textures\\rock2");
+            eTex = content.Load<Texture2D>("Textures\\eSpaceship");
             for (int i = 0; i < 10; i++)
             {
                 sbs.Add(CreateEnemy());
             }
 
             //player
-            pTex = content.Load<Texture2D>("Textures\\pSnowball");
+            pTex = content.Load<Texture2D>("Textures\\pSpaceship");
             pSprite = new L2Player(pTex,
                 new Vector2(pTex.Height / 2, pTex.Height / 2),
                 new Vector2(300, 420),
@@ -109,26 +108,14 @@ namespace Snowy_Castle
         private L2Sprite CreateEnemy()
         {
             Random rand = new Random();
-            int whichEnemy;
-            whichEnemy = rand.Next(0, 2);
-
-            if (whichEnemy == 0)
-            {
-                eTex = e1;
-            }
-            else if (whichEnemy == 1)
-            {
-                eTex = e2;
-            }
 
             return new L2Sprite(eTex,
                 new Vector2(15, 15),
                 new Vector2(
                     (float)rand.Next(0, viewportRect.Width),
-                    (float)rand.Next(0, viewportRect.Height)),
+                    (float)-30),
                 new Rectangle(0, 0, eTex.Width, eTex.Height),
-                new Vector2(0, 0),
-                rand.Next(1, 2));
+                new Vector2(0, 1));
         }
 
         public override void UnloadContent()
@@ -163,7 +150,7 @@ namespace Snowy_Castle
                 {
                     elapsedTime -= spawnTime;
                     sbs.Add(CreateEnemy());
-                    spawnTime = rand.Next(300, 2000);
+                    spawnTime = rand.Next(3000, 7000);
                 }
 
                 if (counterTime > secondTime)
@@ -186,22 +173,16 @@ namespace Snowy_Castle
                                 s.setCollided();
                                 hit.Add(s);
                             }
-
-                            if (lives <= 0)
-                            {
-                                lose.Play();
-                                death = true;
-                                ScreenManager.AddScreen(new Loss(), null);
-                            }
                         }
-
-                        if (s.getLanded() && !s.getPlayed())
-                        {
-                            impactInstance.Play();
-                            inactive.Add(s);
-                            s.setPlayed();
-                        }                        
                     }
+                }
+
+
+                if (lives <= 0)
+                {
+                    lose.Play();
+                    death = true;
+                    ScreenManager.AddScreen(new Loss(), null);
                 }
 
                 foreach (L2Sprite s in hit)
