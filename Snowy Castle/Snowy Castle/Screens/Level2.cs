@@ -26,10 +26,11 @@ namespace Snowy_Castle
         float pauseGradient;
 
         //time
-        private int counterTime = 0;
         private int elapsedTime = 0;
+        private int elapsedTime2 = 0;
         private int secondTime = 1000;
-        private int spawnTime = 2000;
+        private int spawnTime = 1;
+        private int timeLeft = 600;
 
         //player
         Texture2D pTex;
@@ -49,8 +50,10 @@ namespace Snowy_Castle
         SpriteFont periclesFont;
         Vector2 textPosition = new Vector2(10, 10);
         Vector2 textPosition2 = new Vector2(10, 40);
+        Vector2 textPosition3 = new Vector2(10, 70);
         String scoreString = "Score: ";
         String livesString = "Lives: ";
+        String timeString = "Time left: ";
         SoundEffectInstance impactInstance;
 
         public Level2()
@@ -108,14 +111,7 @@ namespace Snowy_Castle
         private L2Sprite CreateEnemy()
         {
             Random rand = new Random();
-
-            return new L2Sprite(eTex,
-                new Vector2(15, 15),
-                new Vector2(
-                    (float)rand.Next(0, viewportRect.Width),
-                    (float)-30),
-                new Rectangle(0, 0, eTex.Width, eTex.Height),
-                new Vector2(0, 1));
+            return new L2Sprite(eTex, new Vector2(15, 15), new Vector2((float)rand.Next(0, viewportRect.Width), (float)-30), new Rectangle(0, 0, eTex.Width, eTex.Height), new Vector2(0, 1));
         }
 
         public override void UnloadContent()
@@ -144,21 +140,25 @@ namespace Snowy_Castle
             {
                 Random rand = new Random();
                 elapsedTime += gameTime.ElapsedGameTime.Milliseconds;
-                counterTime += gameTime.ElapsedGameTime.Milliseconds;
+                elapsedTime2 += gameTime.ElapsedGameTime.Milliseconds;
 
+                //spawn enemy timer
                 if (elapsedTime > spawnTime)
                 {
                     elapsedTime -= spawnTime;
                     sbs.Add(CreateEnemy());
-                    spawnTime = rand.Next(3000, 7000);
+                    spawnTime = rand.Next(timeLeft*5, timeLeft * 10);
                 }
 
-                if (counterTime > secondTime)
+                //update time counter
+                if (elapsedTime2 > secondTime)
                 {
-                    counterTime -= secondTime;
+                    elapsedTime2 -= secondTime;
+                    timeLeft--;
                     score++;
                 }
 
+                //check for collisions
                 foreach (L2Sprite s in sbs)
                 {
                     s.Update(gameTime, viewportRect);
@@ -243,6 +243,7 @@ namespace Snowy_Castle
             background.Draw(spriteBatch);
             spriteBatch.DrawString(periclesFont, (scoreString + score), textPosition, Color.Red);
             spriteBatch.DrawString(periclesFont, (livesString + lives), textPosition2, Color.Red);
+            spriteBatch.DrawString(periclesFont, (timeString + timeLeft), textPosition3, Color.Red);
 
             foreach (L2Sprite s in sbs)
             {

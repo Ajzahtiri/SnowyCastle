@@ -15,7 +15,7 @@ namespace Snowy_Castle
         {
             ProcessInput();
             base.Update(gameTime, viewportRect);
-            velocity *= 0.95f;
+            velocity *= 0.90f;
         }
 
         protected void ProcessInput()
