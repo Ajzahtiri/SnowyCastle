@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Snowy_Castle
 {
-    class AnimatedSprite : Sprite
+    class L2Player : L2Sprite
     {
         private int rows;
         private int columns;
@@ -15,15 +15,13 @@ namespace Snowy_Castle
         private int level = 1;
 
         //level 2
-        public AnimatedSprite(Texture2D tex, Vector2 centre, Vector2 pos, Rectangle sourceRect, Vector2 vel)
-            : base(tex, centre, pos, sourceRect, vel)
+        public L2Player(Texture2D tex, Vector2 centre, Vector2 pos, Rectangle sourceRect, Vector2 vel) : base(tex, centre, pos, sourceRect, vel)
         {
             level = 2;
         }
 
         //level 1
-        public AnimatedSprite(Texture2D tex, Vector2 centre, Vector2 pos, Rectangle sourceRect, Vector2 vel, int rows, int columns, int frames)
-            : base(tex, centre, pos, sourceRect, vel)
+        public L2Player(Texture2D tex, Vector2 centre, Vector2 pos, Rectangle sourceRect, Vector2 vel, int rows, int columns, int frames) : base(tex, centre, pos, sourceRect, vel)
         {
             this.rows = rows;
             this.columns = columns;
@@ -47,10 +45,10 @@ namespace Snowy_Castle
                 sourceRect.X = (currentFrame % columns) * sourceRect.Width;
                 sourceRect.Y = (currentFrame / columns) * sourceRect.Height;
             }
-            
+
             ProcessInput();
             base.Update(gameTime, viewportRect);
-            velocity *= 0.95f;            
+            velocity *= 0.95f;
         }
 
         protected void ProcessInput()
@@ -66,11 +64,11 @@ namespace Snowy_Castle
             }
 
             velocity.X += gamePadState.ThumbSticks.Left.X;
-                
 
-        #if !XBOX
+
+#if !XBOX
             KeyboardState keyboardState = Keyboard.GetState();
-          
+
 
             if (keyboardState.IsKeyDown(Keys.Left))
             {
@@ -81,7 +79,7 @@ namespace Snowy_Castle
             {
                 velocity.X += 1.0f;
                 setBackwards(false);
-                
+
             }
         }
     }

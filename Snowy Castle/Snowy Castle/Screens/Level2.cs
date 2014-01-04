@@ -32,13 +32,13 @@ namespace Snowy_Castle
 
         //player
         Texture2D pTex;
-        Sprite pSprite;
+        L2Sprite pSprite;
 
         //background
         private Background background;
 
         //snowballs
-        private List<Sprite> sbs, inactive, hit;
+        private List<L2Sprite> sbs, inactive, hit;
         private Texture2D eTex, e1, e2;
 
         //sounds
@@ -76,9 +76,9 @@ namespace Snowy_Castle
 
 
             //enemies
-            sbs = new List<Sprite>(1000);
-            inactive = new List<Sprite>(1000);
-            hit = new List<Sprite>(1000);
+            sbs = new List<L2Sprite>(1000);
+            inactive = new List<L2Sprite>(1000);
+            hit = new List<L2Sprite>(1000);
             e1 = content.Load<Texture2D>("Textures\\rock1");
             e2 = content.Load<Texture2D>("Textures\\rock2");
             for (int i = 0; i < 10; i++)
@@ -88,7 +88,7 @@ namespace Snowy_Castle
 
             //player
             pTex = content.Load<Texture2D>("Textures\\pSnowball");
-            pSprite = new AnimatedSprite(pTex,
+            pSprite = new L2Player(pTex,
                 new Vector2(pTex.Height / 2, pTex.Height / 2),
                 new Vector2(300, 420),
                 new Rectangle(0, 0, pTex.Width, pTex.Height),
@@ -106,7 +106,7 @@ namespace Snowy_Castle
 
         }
 
-        private Sprite CreateEnemy()
+        private L2Sprite CreateEnemy()
         {
             Random rand = new Random();
             int whichEnemy;
@@ -121,7 +121,7 @@ namespace Snowy_Castle
                 eTex = e2;
             }
 
-            return new Sprite(eTex,
+            return new L2Sprite(eTex,
                 new Vector2(15, 15),
                 new Vector2(
                     (float)rand.Next(0, viewportRect.Width),
@@ -136,6 +136,7 @@ namespace Snowy_Castle
 
         }
         #endregion
+
         #region Updates
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
@@ -170,7 +171,7 @@ namespace Snowy_Castle
                     score++;
                 }
 
-                foreach (Sprite s in sbs)
+                foreach (L2Sprite s in sbs)
                 {
                     s.Update(gameTime, viewportRect);
                     if (s != pSprite)
@@ -202,12 +203,12 @@ namespace Snowy_Castle
                     }
                 }
 
-                foreach (Sprite s in hit)
+                foreach (L2Sprite s in hit)
                 {
                     sbs.Remove(s);
                 }
 
-                foreach (Sprite s in inactive)
+                foreach (L2Sprite s in inactive)
                 {
 
                 }
@@ -235,7 +236,7 @@ namespace Snowy_Castle
             spriteBatch.DrawString(periclesFont, (scoreString + score), textPosition, Color.Red);
             spriteBatch.DrawString(periclesFont, (livesString + lives), textPosition2, Color.Red);
 
-            foreach (Sprite s in sbs)
+            foreach (L2Sprite s in sbs)
             {
                 s.Draw(gameTime, spriteBatch, Color.White);
             }

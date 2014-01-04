@@ -35,12 +35,12 @@ namespace Snowy_Castle
 
         //player
         Texture2D pTex;
-        AnimatedSprite pSprite;
+        L1Player pSprite;
 
         //snowballs
-        private List<Sprite> sbs;
-        private List<Sprite> inactive;
-        private List<Sprite> hit;
+        private List<L1Sprite> sbs;
+        private List<L1Sprite> inactive;
+        private List<L1Sprite> hit;
         private Texture2D sbTex;
 
         //sounds
@@ -77,15 +77,15 @@ namespace Snowy_Castle
             viewportRect = new Rectangle(0, 0, ScreenManager.GraphicsDevice.Viewport.Width, ScreenManager.GraphicsDevice.Viewport.Height);
 
             //snowballs
-            sbs = new List<Sprite>(1000);
-            inactive = new List<Sprite>(1000);
-            hit = new List<Sprite>(1000);
+            sbs = new List<L1Sprite>(1000);
+            inactive = new List<L1Sprite>(1000);
+            hit = new List<L1Sprite>(1000);
             sbTex = content.Load<Texture2D>("Textures\\Snowball");
             sbs.Add(CreateSb());
             
             //player
             pTex = content.Load<Texture2D>("Textures\\Run");
-            pSprite = new AnimatedSprite(pTex,
+            pSprite = new L1Player(pTex,
                 new Vector2(pTex.Height / 2, pTex.Height / 2),
                 new Vector2(300, 420),
                 new Rectangle(0, 0, 64, pTex.Height),                
@@ -105,10 +105,10 @@ namespace Snowy_Castle
 
         }
 
-        private Sprite CreateSb()
+        private L1Sprite CreateSb()
         {
             Random rand = new Random();
-            return new Sprite(sbTex,
+            return new L1Sprite(sbTex,
                 new Vector2(15, 15),
                 new Vector2(
                     (float)rand.Next(0, viewportRect.Width),
@@ -163,7 +163,7 @@ namespace Snowy_Castle
                     }
                 }
 
-                foreach (Sprite s in sbs)
+                foreach (L1Sprite s in sbs)
                 {
                     s.Update(gameTime, viewportRect);
                     if (s != pSprite)
@@ -204,12 +204,12 @@ namespace Snowy_Castle
 
                 }
 
-                foreach (Sprite s in hit)
+                foreach (L1Sprite s in hit)
                 {
                     sbs.Remove(s);
                 }
 
-                foreach (Sprite s in inactive)
+                foreach (L1Sprite s in inactive)
                 {
 
                 }
@@ -254,7 +254,7 @@ namespace Snowy_Castle
             spriteBatch.DrawString(periclesFont, (textString + score + " snowballs"), textPosition, Color.Red);
             spriteBatch.DrawString(periclesFont, (textString2 + countdown), textPosition2, Color.Red);
 
-            foreach (Sprite s in sbs)
+            foreach (L1Sprite s in sbs)
             {
                 s.Draw(gameTime, spriteBatch, Color.White);
             }  

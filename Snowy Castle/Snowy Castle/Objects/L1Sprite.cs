@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Snowy_Castle
 {
-    class Sprite
+    class L1Sprite
     {
         protected Texture2D texture;
         protected Vector2 centre, velocity, screenPos;
@@ -19,7 +19,7 @@ namespace Snowy_Castle
         protected bool hasPlayed;
 
        
-        public Sprite(Texture2D tex, Vector2 centre, Vector2 pos, Rectangle sourceRect, Vector2 vel)
+        public L1Sprite(Texture2D tex, Vector2 centre, Vector2 pos, Rectangle sourceRect, Vector2 vel)
         {
             texture = tex;
             this.centre = centre;
@@ -29,7 +29,7 @@ namespace Snowy_Castle
             this.size = 1;
         }
 
-        public Sprite(Texture2D tex, Vector2 centre, Vector2 pos, Rectangle sourceRect, Vector2 vel, float size)
+        public L1Sprite(Texture2D tex, Vector2 centre, Vector2 pos, Rectangle sourceRect, Vector2 vel, float size)
         {
             texture = tex;
             this.centre = centre;
@@ -90,7 +90,7 @@ namespace Snowy_Castle
             this.hasLanded = b;
         }
 
-        public virtual bool CollidesWith(Sprite sprite)
+        public virtual bool CollidesWith(L1Sprite sprite)
         {
             return this.BoundingBox.Intersects(sprite.BoundingBox);
         }
