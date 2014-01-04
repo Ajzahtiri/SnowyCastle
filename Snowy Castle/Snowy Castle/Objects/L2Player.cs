@@ -6,46 +6,13 @@ namespace Snowy_Castle
 {
     class L2Player : L2Sprite
     {
-        private int rows;
-        private int columns;
-        private int frames;
-        private int currentFrame;
-        private int elapsedTime = 0;
-        private int setTime = 75;
-        private int level = 1;
-
-        //level 2
         public L2Player(Texture2D tex, Vector2 centre, Vector2 pos, Rectangle sourceRect, Vector2 vel) : base(tex, centre, pos, sourceRect, vel)
         {
-            level = 2;
-        }
 
-        //level 1
-        public L2Player(Texture2D tex, Vector2 centre, Vector2 pos, Rectangle sourceRect, Vector2 vel, int rows, int columns, int frames) : base(tex, centre, pos, sourceRect, vel)
-        {
-            this.rows = rows;
-            this.columns = columns;
-            this.frames = frames;
-            currentFrame = -1;
-            level = 1;
         }
 
         public override void Update(GameTime gameTime, Rectangle viewportRect)
         {
-            elapsedTime += gameTime.ElapsedGameTime.Milliseconds;
-            if (level == 1)
-            {
-                if (elapsedTime > setTime)
-                {
-                    elapsedTime -= setTime;
-                    currentFrame++;
-                    currentFrame %= frames;
-                }
-
-                sourceRect.X = (currentFrame % columns) * sourceRect.Width;
-                sourceRect.Y = (currentFrame / columns) * sourceRect.Height;
-            }
-
             ProcessInput();
             base.Update(gameTime, viewportRect);
             velocity *= 0.95f;
@@ -66,16 +33,15 @@ namespace Snowy_Castle
             velocity.X += gamePadState.ThumbSticks.Left.X;
 
 
-#if !XBOX
+            #if !XBOX
             KeyboardState keyboardState = Keyboard.GetState();
-
-
-            if (keyboardState.IsKeyDown(Keys.Left))
+            
+            if (keyboardState.IsKeyDown(Keys.A))
             {
                 velocity.X -= 1.0f;
                 setBackwards(true);
             }
-            if (keyboardState.IsKeyDown(Keys.Right))
+            if (keyboardState.IsKeyDown(Keys.D))
             {
                 velocity.X += 1.0f;
                 setBackwards(false);

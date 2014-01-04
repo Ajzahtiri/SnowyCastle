@@ -70,12 +70,12 @@ namespace Snowy_Castle
             KeyboardState keyboardState = Keyboard.GetState();
           
 
-            if (keyboardState.IsKeyDown(Keys.Left))
+            if (keyboardState.IsKeyDown(Keys.A))
             {
                 velocity.X -= 1.0f;
                 setBackwards(true);
             }
-            if (keyboardState.IsKeyDown(Keys.Right))
+            if (keyboardState.IsKeyDown(Keys.D))
             {
                 velocity.X += 1.0f;
                 setBackwards(false);

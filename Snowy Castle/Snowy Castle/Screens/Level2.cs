@@ -17,6 +17,7 @@ namespace Snowy_Castle
         #region Initialisation
         //logic 
         SpriteBatch spriteBatch;
+        private float rotation = 0;
         Rectangle viewportRect;
         ContentManager content;
         private int score;
@@ -50,7 +51,6 @@ namespace Snowy_Castle
         Vector2 textPosition2 = new Vector2(10, 40);
         String scoreString = "Score: ";
         String livesString = "Lives: ";
-        int countdown = 20;
         SoundEffectInstance impactInstance;
 
         public Level2()
@@ -143,6 +143,7 @@ namespace Snowy_Castle
             base.Update(gameTime, otherScreenHasFocus, false);
 
             background.Update(2);
+
             if (coveredByOtherScreen)
             {
                 pauseGradient = Math.Min(pauseGradient + 1f / 32, 1);
@@ -223,9 +224,35 @@ namespace Snowy_Castle
             if (input.IsPauseGame(ControllingPlayer))
             {
                 ScreenManager.AddScreen(new PauseMenu(), ControllingPlayer);
+
+            }
+
+            if (keyboardState.IsKeyDown(Keys.Left) || gamePadState.ThumbSticks.Right.X < 0)
+            {
+                if (rotation < -0.8)
+                {
+                    rotation = (float)-0.8;
+                }
+                else
+                {
+                    rotation -= 0.1f;
+                }
+            }
+
+            if (keyboardState.IsKeyDown(Keys.Right) || gamePadState.ThumbSticks.Right.X > 0)
+            {
+                if (rotation > 0.8)
+                {
+                    rotation = (float)0.8;
+                }
+                else
+                {
+                    rotation += 0.1f;
+                }
             }
         }
         #endregion
+
         #region Draw
         public override void Draw(GameTime gameTime)
         {
@@ -238,7 +265,14 @@ namespace Snowy_Castle
 
             foreach (L2Sprite s in sbs)
             {
-                s.Draw(gameTime, spriteBatch, Color.White);
+                if (s == pSprite)
+                {
+                    s.Draw(gameTime, spriteBatch, Color.White, rotation);
+                }
+                else
+                {
+                    s.Draw(gameTime, spriteBatch, Color.White);
+                }
             }
             spriteBatch.End();
 

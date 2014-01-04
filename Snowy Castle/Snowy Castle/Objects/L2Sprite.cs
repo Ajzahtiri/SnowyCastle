@@ -134,6 +134,18 @@ namespace Snowy_Castle
 
         }
 
+        public virtual void Draw(GameTime gameTime, SpriteBatch sb, Color col, float rotation)
+        {
+            if (!facingBackwards)
+            {
+                sb.Draw(texture, screenPos, sourceRect, col, rotation, centre, this.size, SpriteEffects.FlipHorizontally, 0);
+            }
+            else
+            {
+                sb.Draw(texture, screenPos, sourceRect, col, rotation, centre, this.size, SpriteEffects.None, 0);
+            }
+        }
+
         public virtual void Draw(GameTime gameTime, SpriteBatch sb, Color col)
         {
             if (!facingBackwards)
