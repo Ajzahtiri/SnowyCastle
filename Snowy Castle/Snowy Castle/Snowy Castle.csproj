@@ -83,7 +83,8 @@
     <Compile Include="ScreenManager\PlayerIndexEventArgs.cs" />
     <Compile Include="ScreenManager\ScreenManager.cs" />
     <Compile Include="Screens\Level2.cs" />
-    <Compile Include="Screens\Loss.cs" />
+    <Compile Include="Screens\Loss1.cs" />
+    <Compile Include="Screens\Loss2.cs" />
     <Compile Include="Screens\MainMenu.cs" />
     <Compile Include="ScreenManager\MenuItem.cs" />
     <Compile Include="ScreenManager\MenuScreen.cs" />
