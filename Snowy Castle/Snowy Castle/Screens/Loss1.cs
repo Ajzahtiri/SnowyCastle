@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Snowy_Castle
 {
-    class Loss : MenuScreen
+    class Loss1 : MenuScreen
     {
-        public Loss() : base("You didn't make it! Swamped by Snowballs!")
+        public Loss1() : base("You didn't make it! Swamped by Snowballs!", 1)
         {
             MenuItem i1 = new MenuItem("Retry (from Level 1)");
             MenuItem i2 = new MenuItem("Tunnel out! (to the Main Menu)");

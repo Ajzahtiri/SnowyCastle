@@ -49,7 +49,7 @@ namespace Snowy_Castle
         private List<Bullet> deadBullets = new List<Bullet>(10000000);
 
         //sounds
-        private SoundEffect impact, ouch, lose;
+        private SoundEffect explode, shoot;
 
         //text
         SpriteFont periclesFont;
@@ -58,8 +58,6 @@ namespace Snowy_Castle
         Vector2 textPosition3 = new Vector2(10, 70);
         String scoreString = "Score: ";
         String livesString = "Lives: ";
-        String timeString = "Time left: ";
-        SoundEffectInstance impactInstance;
 
         public Level2()
         {
@@ -103,10 +101,8 @@ namespace Snowy_Castle
             sbs.Add(pSprite);
 
             //sounds
-            impact = content.Load<SoundEffect>("Sounds\\impact");
-            ouch = content.Load<SoundEffect>("Sounds\\ow");
-            lose = content.Load<SoundEffect>("Sounds\\u_lose");
-            impactInstance = impact.CreateInstance();
+            explode = content.Load<SoundEffect>("Sounds\\2explode");
+            shoot = content.Load<SoundEffect>("Sounds\\2shoot");
 
             //text
             periclesFont = content.Load<SpriteFont>("Fonts\\Pericles");
@@ -178,7 +174,7 @@ namespace Snowy_Castle
                             if (!s.getLanded() && !s.getCollided())
                             {
                                 lives--;
-                                ouch.Play();
+                                explode.Play();
                                 s.setCollided();
                                 hit.Add(s);
                             }
@@ -195,6 +191,7 @@ namespace Snowy_Castle
                                     {
                                         s.setCollided();
                                         hit.Add(s);
+                                        explode.Play();
                                         score += 25;
                                     }
                                     deadBullets.Add(b);
@@ -207,8 +204,8 @@ namespace Snowy_Castle
                 //check for death
                 if (lives <= 0)
                 {
-                    lose.Play();
-                    ScreenManager.AddScreen(new Loss(), null);
+                    explode.Play();
+                    ScreenManager.AddScreen(new Loss2(), null);
                 }
 
                 foreach (L2Sprite s in hit)
@@ -278,6 +275,7 @@ namespace Snowy_Castle
             if (keyboardState.IsKeyDown(Keys.Space) || gamePadState.Triggers.Right > 0)
             {
                 PlayerShoot();
+                shoot.Play();
             }
 
             if (keyboardState.IsKeyDown(Keys.Left) || gamePadState.ThumbSticks.Right.X < 0)
@@ -315,7 +313,6 @@ namespace Snowy_Castle
             background.Draw(spriteBatch);
             spriteBatch.DrawString(periclesFont, (scoreString + score), textPosition, Color.Red);
             spriteBatch.DrawString(periclesFont, (livesString + lives), textPosition2, Color.Red);
-            spriteBatch.DrawString(periclesFont, (timeString + timeLeft), textPosition3, Color.Red);
 
             foreach (L2Sprite s in sbs)
             {

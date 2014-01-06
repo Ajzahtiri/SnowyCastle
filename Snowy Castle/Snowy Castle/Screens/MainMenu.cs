@@ -4,7 +4,7 @@ namespace Snowy_Castle
 {
     class MainMenu : MenuScreen
     {
-       public MainMenu() : base("Main Menu")
+       public MainMenu() : base("Main Menu", 1)
         {
             MenuItem playL1 = new MenuItem("Play Level 1");
             MenuItem playL2 = new MenuItem("Play Level 2");

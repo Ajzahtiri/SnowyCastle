@@ -4,7 +4,7 @@ namespace Snowy_Castle
 {
     class PauseMenu : MenuScreen
     {
-        public PauseMenu() : base("Paused")
+        public PauseMenu() : base("Paused", 1)
         {
             MenuItem resumeGameMenuEntry = new MenuItem("Resume Game");
             MenuItem quitGameMenuEntry = new MenuItem("Quit Game");

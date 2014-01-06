@@ -1,13 +1,17 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace Snowy_Castle
 {
-    class Victory : MenuScreen
+    class Loss2 : MenuScreen
     {
-        public Victory() : base("Congratulations! You survived! But then...", 1)
+        public Loss2()
+            : base("You didn't make it! Space was too great for you.", 2)
         {
-            MenuItem i1 = new MenuItem("Proceed to Level 2");
-            MenuItem i2 = new MenuItem("Flee! (to the Main Menu)");
+            MenuItem i1 = new MenuItem("Retry (from Level 2)");
+            MenuItem i2 = new MenuItem("Tunnel out! (to the Main Menu)");
 
             i1.Selected += toLevel2;
             i2.Selected += exit;

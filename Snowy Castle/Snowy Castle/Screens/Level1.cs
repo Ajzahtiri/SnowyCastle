@@ -220,7 +220,7 @@ namespace Snowy_Castle
                     {
                         lose.Play();
                         death = true;
-                        ScreenManager.AddScreen(new Loss(), null);
+                        ScreenManager.AddScreen(new Loss1(), null);
                     }
                 }
 

@@ -10,6 +10,7 @@ namespace Snowy_Castle
     {
         List<MenuItem> menuEntries = new List<MenuItem>();
         int selectedEntry = 0;
+        int bow;
         string menuTitle;
 
         protected IList<MenuItem> MenuEntries
@@ -20,10 +21,10 @@ namespace Snowy_Castle
             }
         }
 
-        public MenuScreen(string menuTitle)
+        public MenuScreen(string menuTitle, int w)
         {
             this.menuTitle = menuTitle;
-
+            this.bow = w;
             TransitionOnTime = TimeSpan.FromSeconds(0.5);
             TransitionOffTime = TimeSpan.FromSeconds(0.5);
         }
@@ -134,9 +135,17 @@ namespace Snowy_Castle
 
             float transitionOffset = (float)Math.Pow(TransitionPosition, 2);
 
-            Vector2 titlePosition = new Vector2(graphics.Viewport.Width / 2, 80);
+            Vector2 titlePosition = new Vector2(graphics.Viewport.Width / 2, 100);
             Vector2 titleOrigin = font.MeasureString(menuTitle) / 2;
-            Color titleColor = new Color(192, 192, 192) * TransitionAlpha;
+            Color titleColor = new Color();
+            if (bow == 1)
+            {
+                titleColor = new Color(0, 0, 0) * TransitionAlpha;
+            }
+            else if (bow == 2)
+            {
+                titleColor = new Color(255, 255, 255) * TransitionAlpha;
+            }
             float titleScale = 1.25f;
 
             titlePosition.Y -= transitionOffset * 100;
