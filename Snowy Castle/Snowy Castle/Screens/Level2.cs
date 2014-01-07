@@ -33,7 +33,7 @@ namespace Snowy_Castle
         private int elapsedTime3 = 0;
         private int secondTime = 1000;
         private int spawnTime = 1;
-        private int timeLeft = 658;
+        private int timeLeft = 600;
         private int rotationTime;
 
         //player
