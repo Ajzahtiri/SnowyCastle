@@ -1,6 +1,9 @@
 using System;
 using Microsoft.Xna.Framework;
+using System.IO;
+using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.GamerServices;
 
 namespace Snowy_Castle
 {
@@ -26,6 +29,12 @@ namespace Snowy_Castle
         {
          
         }
+
+        protected override void Initialize()
+        {
+            base.Initialize();
+        }
+        
 
         protected override void Draw(GameTime gameTime)
         {

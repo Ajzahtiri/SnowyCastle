@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using System.IO;
 
 namespace Snowy_Castle
 {
@@ -23,6 +24,8 @@ namespace Snowy_Castle
         private int score;
         private int lives = 5;
         float pauseGradient;
+        int prevhs = 0;
+        int temp = 0;
 
         //time
         private int elapsedTime = 0;
@@ -30,7 +33,7 @@ namespace Snowy_Castle
         private int elapsedTime3 = 0;
         private int secondTime = 1000;
         private int spawnTime = 1;
-        private int timeLeft = 600;
+        private int timeLeft = 658;
         private int rotationTime;
 
         //player
@@ -50,6 +53,7 @@ namespace Snowy_Castle
 
         //sounds
         private SoundEffect explode, shoot;
+        private Song music;
 
         //text
         SpriteFont periclesFont;
@@ -65,6 +69,7 @@ namespace Snowy_Castle
             TransitionOffTime = TimeSpan.FromSeconds(0.5);
         }
         #endregion
+
         #region Load Content
         public override void LoadContent()
         {
@@ -103,6 +108,8 @@ namespace Snowy_Castle
             //sounds
             explode = content.Load<SoundEffect>("Sounds\\2explode");
             shoot = content.Load<SoundEffect>("Sounds\\2shoot");
+            music = content.Load<Song>("Sounds\\Epsilon Indi");
+            MediaPlayer.Play(music);
 
             //text
             periclesFont = content.Load<SpriteFont>("Fonts\\Pericles");
@@ -199,6 +206,18 @@ namespace Snowy_Castle
                             }
                         }
                     }
+                }
+
+                if (timeLeft == 0)
+                {
+                    
+                    if (score > prevhs)
+                    {
+                        temp = prevhs;
+                        prevhs = score;
+                    }
+                    ScreenManager.AddScreen(new Victory2(score, temp), null);
+                
                 }
 
                 //check for death

@@ -58,7 +58,7 @@ namespace Snowy_Castle
         public override void Initialize()
         {
             base.Initialize();
-
+            
             isInitialized = true;
         }
 

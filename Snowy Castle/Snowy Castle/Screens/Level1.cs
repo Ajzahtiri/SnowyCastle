@@ -226,7 +226,7 @@ namespace Snowy_Castle
 
                 if (countdown == 0 && score < 5)
                 {
-                    ScreenManager.AddScreen(new Victory(), null);
+                    ScreenManager.AddScreen(new Victory1(), null);
                 }
 
                 
