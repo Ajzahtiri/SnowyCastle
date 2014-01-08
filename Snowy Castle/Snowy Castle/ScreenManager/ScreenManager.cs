@@ -7,37 +7,35 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Snowy_Castle
 {
-    public class ScreenManager : DrawableGameComponent
+    public class screenManager : DrawableGameComponent
     {
-        List<GameScreen> screens = new List<GameScreen>();
-        List<GameScreen> screensToUpdate = new List<GameScreen>();
+        List<gameScreen> screens = new List<gameScreen>();
+        List<gameScreen> screensToUpdate = new List<gameScreen>();
 
-        InputState input = new InputState();
-
-        SpriteBatch spriteBatch;
-        public SpriteFont font;
+        inputState input = new inputState();
+        SpriteBatch sB;
         Texture2D background;
+        public SpriteFont f;
+        bool isInitialized, traceEnabled;
 
-        bool isInitialized;
+        public screenManager(Game game) : base(game)
+        {
 
-        bool traceEnabled;
-
+        }
         public SpriteBatch SpriteBatch
         {
             get 
             { 
-                return spriteBatch; 
+                return sB; 
             }
         }
-
         public SpriteFont Font
         {
             get 
             { 
-                return font; 
+                return f; 
             }
         }
-
         public bool TraceEnabled
         {
             get 
@@ -48,76 +46,64 @@ namespace Snowy_Castle
             { 
                 traceEnabled = value; 
             }
-        }
-
-        public ScreenManager(Game game) : base(game)
-        {
-           
-        }
-
+        }        
         public override void Initialize()
         {
             base.Initialize();
             
             isInitialized = true;
         }
-
         protected override void LoadContent()
         {
             ContentManager content = Game.Content;
-
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-            font = content.Load<SpriteFont>("Fonts\\Pericles");
+            sB = new SpriteBatch(GraphicsDevice);
+            f = content.Load<SpriteFont>("Fonts\\Pericles");
             background = content.Load<Texture2D>("Textures\\Winter_Castle");
 
-            foreach (GameScreen screen in screens)
+            foreach (gameScreen screen in screens)
             {
                 screen.LoadContent();
             }
         }
-
         protected override void UnloadContent()
         {
-            foreach (GameScreen screen in screens)
+            foreach (gameScreen screen in screens)
             {
                 screen.UnloadContent();
             }
         }
-
         public override void Update(GameTime gameTime)
         {
             input.Update();
-
             screensToUpdate.Clear();
-
-            foreach (GameScreen screen in screens)
+            foreach (gameScreen s in screens)
             {
-                screensToUpdate.Add(screen);
+                screensToUpdate.Add(s);
             }
 
-            bool otherScreenHasFocus = !Game.IsActive;
-            bool coveredByOtherScreen = false;
+            bool otherScreenFocus = !Game.IsActive;
+            bool coveredOtherScreen = false;
 
             while (screensToUpdate.Count > 0)
             {
-                GameScreen screen = screensToUpdate[screensToUpdate.Count - 1];
+                gameScreen screen = screensToUpdate[screensToUpdate.Count - 1];
 
                 screensToUpdate.RemoveAt(screensToUpdate.Count - 1);
 
-                screen.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
+                screen.Update(gameTime, otherScreenFocus, coveredOtherScreen);
 
-                if (screen.ScreenState == ScreenState.TransitionOn || screen.ScreenState == ScreenState.Active)
+                if (screen.state == screenState.On || screen.state == screenState.Active)
                 {
-                    if (!otherScreenHasFocus)
+                    if (!otherScreenFocus)
                     {
                         screen.HandleInput(input);
 
-                        otherScreenHasFocus = true;
+                        otherScreenFocus = true;
                     }
 
-                    if (!screen.IsPopup)
+                    if (!screen.popsUp)
                     {
-                        coveredByOtherScreen = true;
+                        coveredOtherScreen = true;
                     }
                 }
             }
@@ -127,68 +113,55 @@ namespace Snowy_Castle
                 TraceScreens();
             }
         }
-
         void TraceScreens()
         {
             List<string> screenNames = new List<string>();
-
-            foreach (GameScreen screen in screens)
+            foreach (gameScreen screen in screens)
             {
                 screenNames.Add(screen.GetType().Name);
             }
+
             Debug.WriteLine(string.Join(", ", screenNames.ToArray()));
         }
-
         public override void Draw(GameTime gameTime)
         {
-            foreach (GameScreen screen in screens)
+            foreach (gameScreen screen in screens)
             {
-                if (screen.ScreenState == ScreenState.Hidden)
+                if (screen.state == screenState.Hidden)
                 {
                     continue;
                 }
                 screen.Draw(gameTime);
             }
         }
-
-        public void AddScreen(GameScreen screen, PlayerIndex? controllingPlayer)
+        public void AddScreen(gameScreen s, PlayerIndex? thisPlayerr)
         {
-            screen.ControllingPlayer = controllingPlayer;
-            screen.ScreenManager = this;
-            screen.IsExiting = false;
+            s.thisPlayer = thisPlayerr;
+            s.SManager = this;
+            s.exiting = false;
 
             if (isInitialized)
             {
-                screen.LoadContent();
+                s.LoadContent();
             }
 
-            screens.Add(screen);
+            screens.Add(s);
 
         }
-
-        public void RemoveScreen(GameScreen screen)
+        public void RemoveScreen(gameScreen s)
         {
             if (isInitialized)
             {
-                screen.UnloadContent();
+                s.UnloadContent();
             }
 
-            screens.Remove(screen);
-            screensToUpdate.Remove(screen);
+            screens.Remove(s);
+            screensToUpdate.Remove(s);
         }
-
-        public GameScreen[] GetScreens()
+        public gameScreen[] GetScreens()
         {
             return screens.ToArray();
         }
-
-        public void FadeBackBufferToBlack(float alpha)
-        {
-            Viewport viewport = GraphicsDevice.Viewport;
-
-            spriteBatch.Begin();
-            spriteBatch.Draw(background, new Rectangle(0, 0, viewport.Width, viewport.Height), Color.Black * alpha);
-            spriteBatch.End();
-        }
+       
     }
 }

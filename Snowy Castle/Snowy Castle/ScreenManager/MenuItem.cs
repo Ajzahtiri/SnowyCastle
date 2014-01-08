@@ -4,12 +4,17 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Snowy_Castle
 {
-    class MenuItem
+    class menuItem
     {
         string text;
-        float selectionFade;
+        float fade;
         Vector2 position;
+        public event EventHandler<playerEvent> chosen;
 
+        public menuItem(string text)
+        {
+            this.text = text;
+        }
         public string Text
         {
             get 
@@ -21,7 +26,6 @@ namespace Snowy_Castle
                 text = value; 
             }
         }
-
         public Vector2 Position
         {
             get 
@@ -32,65 +36,52 @@ namespace Snowy_Castle
             { 
                 position = value; 
             }
-        }
-
-        public event EventHandler<PlayerIndexEventArgs> Selected;
-
-        protected internal virtual void OnSelectEntry(PlayerIndex playerIndex)
+        }        
+        protected internal virtual void onSelect(PlayerIndex pIndex)
         {
-            if (Selected != null)
+            if (chosen != null)
             {
-                Selected(this, new PlayerIndexEventArgs(playerIndex));
+                chosen(this, new playerEvent(pIndex));
             }
-        }
-
-        public MenuItem(string text)
-        {
-            this.text = text;
-        }
-
-        public virtual void Update(MenuScreen screen, bool isSelected, GameTime gameTime)
+        }        
+        public virtual void Update(menuScreen screen, bool isChosen, GameTime gameTime)
         {
             float fadeSpeed = (float)gameTime.ElapsedGameTime.TotalSeconds * 4;
 
-            if (isSelected)
+            if (isChosen)
             {
-                selectionFade = Math.Min(selectionFade + fadeSpeed, 1);
+                fade = Math.Min(fade + fadeSpeed, 1);
             }
             else
             {
-                selectionFade = Math.Max(selectionFade - fadeSpeed, 0);
+                fade = Math.Max(fade - fadeSpeed, 0);
             }
         }
-
-        public virtual void Draw(MenuScreen screen, bool isSelected, GameTime gameTime)
+        public virtual void Draw(menuScreen screen, bool isChosen, GameTime gameTime)
         {
-            Color color = isSelected ? Color.Yellow : Color.White;
+            Color color = isChosen ? Color.DarkGray : Color.Black;
 
             double time = gameTime.TotalGameTime.TotalSeconds;
-            float pulsate = (float)Math.Sin(time * 6) + 1;
-            float scale = 1 + pulsate * 0.05f * selectionFade;
+            float pulse = (float)Math.Sin(time * 6) + 1;
+            float scale = 1 + pulse * 0.05f * fade;
 
-            color *= screen.TransitionAlpha;
+            color *= screen.transAlpha;
 
-            ScreenManager screenManager = screen.ScreenManager;
+            screenManager screenManager = screen.SManager;
             SpriteBatch spriteBatch = screenManager.SpriteBatch;
             SpriteFont font = screenManager.Font;
 
             Vector2 origin = new Vector2(0, font.LineSpacing / 2);
 
-            spriteBatch.DrawString(font, text, position, color, 0,
-                                   origin, scale, SpriteEffects.None, 0);
+            spriteBatch.DrawString(font, text, position, color, 0, origin, scale, SpriteEffects.None, 0);
         }
-
-        public virtual int GetHeight(MenuScreen screen)
+        public virtual int getHeight(menuScreen screen)
         {
-            return screen.ScreenManager.Font.LineSpacing;
+            return screen.SManager.Font.LineSpacing;
         }
-
-        public virtual int GetWidth(MenuScreen screen)
+        public virtual int getWidth(menuScreen screen)
         {
-            return (int)screen.ScreenManager.Font.MeasureString(Text).X;
+            return (int)screen.SManager.Font.MeasureString(Text).X;
         }
     }
 }

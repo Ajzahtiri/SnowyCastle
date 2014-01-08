@@ -4,130 +4,125 @@ using System.IO;
 
 namespace Snowy_Castle
 {
-    public enum ScreenState
+    public enum screenState
     {
-        TransitionOn,
+        On,
         Active,
-        TransitionOff,
+        Off,
         Hidden,
     }
 
-    public abstract class GameScreen
+    public abstract class gameScreen
     {
-        public bool IsPopup
+        public bool popsUp
         {
             get 
             { 
-                return isPopup; 
+                return pop; 
             }
             protected set 
             { 
-                isPopup = value; 
+                pop = value; 
             }
         }
+        bool pop = false;
 
-        bool isPopup = false;
-
-        public TimeSpan TransitionOnTime
+        public TimeSpan onTime
         {
             get 
             { 
-                return transitionOnTime; 
+                return oT; 
             }
             protected set 
             { 
-                transitionOnTime = value; 
+                oT = value; 
             }
-        }
+        }        
+        TimeSpan oT = TimeSpan.Zero;
 
-        TimeSpan transitionOnTime = TimeSpan.Zero;
-
-        public TimeSpan TransitionOffTime
+        public TimeSpan offTime
         {
             get 
             { 
-                return transitionOffTime; 
+                return offT; 
             }
             protected set 
             { 
-                transitionOffTime = value; 
+                offT = value; 
             }
         }
+        TimeSpan offT = TimeSpan.Zero;
 
-        TimeSpan transitionOffTime = TimeSpan.Zero;
-
-        public float TransitionPosition
+        public float transPos
         {
             get 
             { 
-                return transitionPosition; 
+                return pos; 
             }
             protected set 
             { 
-                transitionPosition = value; 
+                pos = value; 
             }
         }
+        float pos = 1;
 
-        float transitionPosition = 1;
-
-        public float TransitionAlpha
-        {
-            get { return 1f - TransitionPosition; }
-        }
-
-        public ScreenState ScreenState
+        public float transAlpha
         {
             get 
             { 
-                return screenState; 
+                return 1f - transPos;
+            }
+        }
+
+        public screenState state
+        {
+            get 
+            { 
+                return currentState; 
             }
             protected set 
             { 
-                screenState = value; 
+                currentState = value; 
             }
         }
+        screenState currentState = screenState.On;
 
-        ScreenState screenState = ScreenState.TransitionOn;
-
-        public bool IsExiting
+        public bool exiting
         {
             get 
             { 
-                return isExiting; 
+                return exit; 
             }
             protected internal set 
             { 
-                isExiting = value; 
+                exit = value; 
             }
         }
+        bool exit = false;
 
-        bool isExiting = false;
-
-        public bool IsActive
+        public bool active
         {
             get
             {
-                return !otherScreenHasFocus && (screenState == ScreenState.TransitionOn || screenState == ScreenState.Active);
+                return !otherScreenHasFocus && (currentState == screenState.On || currentState == screenState.Active);
             }
         }
-
         bool otherScreenHasFocus;
 
-        public ScreenManager ScreenManager
+        public screenManager SManager
         {
             get 
             { 
-                return screenManager; 
+                return sManager; 
             }
             internal set 
             { 
-                screenManager = value; 
+                sManager = value; 
             }
         }
+        screenManager sManager;
 
-        ScreenManager screenManager;
-
-        public PlayerIndex? ControllingPlayer
+        public PlayerIndex? thisPlayer
         {
             get 
             { 
@@ -138,58 +133,46 @@ namespace Snowy_Castle
                 controllingPlayer = value; 
             }
         }
-
         PlayerIndex? controllingPlayer;
 
-        public virtual void LoadContent() 
-        { 
-        
-        }
-
-        public virtual void UnloadContent() 
-        { 
-        
-        }
-
-
-        public virtual void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
+        public virtual void Update(GameTime gameTime, bool otherScreenFocus, bool coveredOtherScreen)
         {
-            this.otherScreenHasFocus = otherScreenHasFocus;
+            this.otherScreenHasFocus = otherScreenFocus;
 
-            if (isExiting)
+            if (exit)
             {
-                screenState = ScreenState.TransitionOff;
+                currentState = screenState.Off;
 
-                if (!UpdateTransition(gameTime, transitionOffTime, 1))
+                if (!theTransition(gameTime, offT, 1))
                 {
-                    ScreenManager.RemoveScreen(this);
+                    SManager.RemoveScreen(this);
                 }
             }
-            else if (coveredByOtherScreen)
+            else if (coveredOtherScreen)
             {
-                if (UpdateTransition(gameTime, transitionOffTime, 1))
+                if (theTransition(gameTime, offT, 1))
                 {
-                    screenState = ScreenState.TransitionOff;
+                    currentState = screenState.Off;
                 }
                 else
                 {
-                    screenState = ScreenState.Hidden;
+                    currentState = screenState.Hidden;
                 }
             }
             else
             {
-                if (UpdateTransition(gameTime, transitionOnTime, -1))
+                if (theTransition(gameTime, oT, -1))
                 {
-                    screenState = ScreenState.TransitionOn;
+                    currentState = screenState.On;
                 }
                 else
                 {
-                    screenState = ScreenState.Active;
+                    currentState = screenState.Active;
                 }
             }
         }
 
-        bool UpdateTransition(GameTime gameTime, TimeSpan time, int direction)
+        bool theTransition(GameTime gameTime, TimeSpan time, int dir)
         {
             float transitionDelta;
 
@@ -199,37 +182,46 @@ namespace Snowy_Castle
                 transitionDelta = (float)(gameTime.ElapsedGameTime.TotalMilliseconds /
                                           time.TotalMilliseconds);
 
-            transitionPosition += transitionDelta * direction;
+            pos += transitionDelta * dir;
 
-            if (((direction < 0) && (transitionPosition <= 0)) ||
-                ((direction > 0) && (transitionPosition >= 1)))
+            if (((dir < 0) && (pos <= 0)) ||
+                ((dir > 0) && (pos >= 1)))
             {
-                transitionPosition = MathHelper.Clamp(transitionPosition, 0, 1);
+                pos = MathHelper.Clamp(pos, 0, 1);
                 return false;
             }
 
             return true;
         }
 
-        public virtual void HandleInput(InputState input) 
-        { 
-
-        }
-
-
-        public virtual void Draw(GameTime gameTime) { }
-
-
-        public void ExitScreen()
+        public void exitScreen()
         {
-            if (TransitionOffTime == TimeSpan.Zero)
+            if (offTime == TimeSpan.Zero)
             {
-                ScreenManager.RemoveScreen(this);
+                SManager.RemoveScreen(this);
             }
             else
             {
-                isExiting = true;
+                exit = true;
             }
+        }
+
+        //overrideable methods
+        public virtual void LoadContent()
+        {
+
+        }
+        public virtual void UnloadContent()
+        {
+
+        }
+        public virtual void HandleInput(inputState input) 
+        { 
+
+        }
+        public virtual void Draw(GameTime gameTime) 
+        {
+
         }
     }
 }

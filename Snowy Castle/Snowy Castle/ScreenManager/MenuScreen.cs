@@ -6,152 +6,135 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Snowy_Castle
 {
-    abstract class MenuScreen : GameScreen
+    abstract class menuScreen : gameScreen
     {
-        List<MenuItem> menuEntries = new List<MenuItem>();
-        int selectedEntry = 0;
-        int bow;
+        List<menuItem> menuEntries = new List<menuItem>();
+        int selected = 0;
         string menuTitle;
+        Texture2D rect;
 
-        protected IList<MenuItem> MenuEntries
+        protected IList<menuItem> MenuEntries
         {
             get 
             { 
                 return menuEntries; 
             }
         }
-
-        public MenuScreen(string menuTitle, int w)
+        public menuScreen(string menuTitle)
         {
             this.menuTitle = menuTitle;
-            this.bow = w;
-            TransitionOnTime = TimeSpan.FromSeconds(0.5);
-            TransitionOffTime = TimeSpan.FromSeconds(0.5);
+            onTime = TimeSpan.FromSeconds(0.5);
+            offTime = TimeSpan.FromSeconds(0.5);
         }
-
-        public override void HandleInput(InputState input)
+        public override void HandleInput(inputState input)
         {
-            if (input.IsMenuUp(ControllingPlayer))
+            if (input.isMenuUp(thisPlayer))
             {
-                selectedEntry--;
+                selected--;
 
-                if (selectedEntry < 0)
-                    selectedEntry = menuEntries.Count - 1;
+                if (selected < 0)
+                    selected = menuEntries.Count - 1;
             }
 
-            if (input.IsMenuDown(ControllingPlayer))
+            if (input.isMenuDown(thisPlayer))
             {
-                selectedEntry++;
+                selected++;
 
-                if (selectedEntry >= menuEntries.Count)
-                    selectedEntry = 0;
+                if (selected >= menuEntries.Count)
+                    selected = 0;
             }
 
-            PlayerIndex playerIndex;
+            PlayerIndex pIndex;
 
-            if (input.IsMenuSelect(ControllingPlayer, out playerIndex))
+            if (input.isSelect(thisPlayer, out pIndex))
             {
-                OnSelectEntry(selectedEntry, playerIndex);
+                OnSelectEntry(selected, pIndex);
             }
-            else if (input.IsMenuCancel(ControllingPlayer, out playerIndex))
+            else if (input.isCancel(thisPlayer, out pIndex))
             {
-                OnCancel(playerIndex);
+                OnCancel(pIndex);
             }
         }
-
-        protected virtual void OnSelectEntry(int entryIndex, PlayerIndex playerIndex)
+        protected virtual void OnSelectEntry(int eIndex, PlayerIndex pIndex)
         {
-            menuEntries[entryIndex].OnSelectEntry(playerIndex);
+            menuEntries[eIndex].onSelect(pIndex);
         }
-
-        protected virtual void OnCancel(PlayerIndex playerIndex)
+        protected virtual void OnCancel(PlayerIndex pIndex)
         {
-            ExitScreen();
+            exitScreen();
         }
-
-        protected void OnCancel(object sender, PlayerIndexEventArgs e)
+        protected void OnCancel(object sender, playerEvent e)
         {
-            OnCancel(e.PlayerIndex);
+            OnCancel(e.pIndex);
         }
-
         protected virtual void UpdateMenuEntryLocations()
         {
-            float transitionOffset = (float)Math.Pow(TransitionPosition, 2);
-
+            float offset = (float)Math.Pow(transPos, 2);
             Vector2 position = new Vector2(0f, 175f);
 
             for (int i = 0; i < menuEntries.Count; i++)
             {
-                MenuItem menuEntry = menuEntries[i];
+                menuItem menuEntry = menuEntries[i];
+                position.X = SManager.GraphicsDevice.Viewport.Width / 2 - menuEntry.getWidth(this) / 2;
 
-                position.X = ScreenManager.GraphicsDevice.Viewport.Width / 2 - menuEntry.GetWidth(this) / 2;
-
-                if (ScreenState == ScreenState.TransitionOn)
+                if (state == screenState.On)
                 {
-                    position.X -= transitionOffset * 256;
+                    position.X -= offset * 256;
                 }
                 else
                 {
-                    position.X += transitionOffset * 512;
+                    position.X += offset * 512;
                 }
 
                 menuEntry.Position = position;
 
-                position.Y += menuEntry.GetHeight(this);
+                position.Y += menuEntry.getHeight(this);
             }
         }
-
-        public override void Update(GameTime gameTime, bool otherScreenHasFocus,
-                                                       bool coveredByOtherScreen)
+        public override void LoadContent()
         {
-            base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
+            GraphicsDevice graphics = SManager.GraphicsDevice;
+            rect = new Texture2D(graphics, 1, 1, false, SurfaceFormat.Color);
+            rect.SetData(new[] { Color.White });
+        }
+        public override void Update(GameTime gameTime, bool otherScreenFocus, bool coveredOtherScreen)
+        {
+            base.Update(gameTime, otherScreenFocus, coveredOtherScreen);
 
             for (int i = 0; i < menuEntries.Count; i++)
             {
-                bool isSelected = IsActive && (i == selectedEntry);
+                bool isSelected = active && (i == selected);
 
                 menuEntries[i].Update(this, isSelected, gameTime);
             }
         }
-
         public override void Draw(GameTime gameTime)
         {
             UpdateMenuEntryLocations();
-
-            GraphicsDevice graphics = ScreenManager.GraphicsDevice;
-            SpriteBatch spriteBatch = ScreenManager.SpriteBatch;
-            SpriteFont font = ScreenManager.Font;
-
+            GraphicsDevice graphics = SManager.GraphicsDevice;
+            SpriteBatch spriteBatch = SManager.SpriteBatch;
+            SpriteFont font = SManager.Font;
             spriteBatch.Begin();
+
+            spriteBatch.Draw(rect, new Rectangle(124, 65, 400, 200), Color.White);
 
             for (int i = 0; i < menuEntries.Count; i++)
             {
-                MenuItem menuItem = menuEntries[i];
-
-                bool isSelected = IsActive && (i == selectedEntry);
-
+                menuItem menuItem = menuEntries[i];
+                bool isSelected = active && (i == selected);
                 menuItem.Draw(this, isSelected, gameTime);
             }
 
-            float transitionOffset = (float)Math.Pow(TransitionPosition, 2);
+            float offset = (float)Math.Pow(transPos, 2);
 
-            Vector2 titlePosition = new Vector2(graphics.Viewport.Width / 2, 100);
-            Vector2 titleOrigin = font.MeasureString(menuTitle) / 2;
-            Color titleColor = new Color();
-            if (bow == 1)
-            {
-                titleColor = new Color(0, 0, 0) * TransitionAlpha;
-            }
-            else if (bow == 2)
-            {
-                titleColor = new Color(255, 255, 255) * TransitionAlpha;
-            }
+            Vector2 tPosition = new Vector2(graphics.Viewport.Width / 2, 100);
+            Vector2 tCenter = font.MeasureString(menuTitle) / 2;
+            Color tColor = new Color();
+            tColor = new Color(0, 0, 0) * transAlpha; 
             float titleScale = 1.25f;
+            tPosition.Y -= offset * 100;
 
-            titlePosition.Y -= transitionOffset * 100;
-
-            spriteBatch.DrawString(font, menuTitle, titlePosition, titleColor, 0,
-                                   titleOrigin, titleScale, SpriteEffects.None, 0);
+            spriteBatch.DrawString(font, menuTitle, tPosition, tColor, 0, tCenter, titleScale, SpriteEffects.None, 0);
 
             spriteBatch.End();
         }

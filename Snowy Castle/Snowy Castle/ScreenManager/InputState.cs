@@ -4,137 +4,87 @@ using System.Collections.Generic;
 
 namespace Snowy_Castle
 {
-    public class InputState
+    public class inputState
     {
-        public KeyboardState CurrentKeyboardState;
-        public GamePadState CurrentGamePadState;
+        public KeyboardState currentKeyboardState;
+        public KeyboardState lastKeyboardState;
+        public GamePadState currentGamePadState;        
+        public GamePadState lastGamePadState;
 
-        public KeyboardState LastKeyboardState;
-        public GamePadState LastGamePadState;
+        public bool gamePadWasConnected;
 
-        public bool GamePadWasConnected;
-
-        public InputState()
+        public inputState()
         {
-            CurrentKeyboardState = new KeyboardState();
-            CurrentGamePadState = new GamePadState();
+            currentKeyboardState = new KeyboardState();
+            lastKeyboardState = new KeyboardState();
+            currentGamePadState = new GamePadState();            
+            lastGamePadState = new GamePadState();
 
-            LastKeyboardState = new KeyboardState();
-            LastGamePadState = new GamePadState();
-
-            GamePadWasConnected = new bool();
+            gamePadWasConnected = new bool();
         }
-
         public void Update()
         {
-            LastKeyboardState = CurrentKeyboardState;
-            LastGamePadState = CurrentGamePadState;
+            lastKeyboardState = currentKeyboardState;
+            currentKeyboardState = Keyboard.GetState((PlayerIndex.One));
+            lastGamePadState = currentGamePadState;
+            currentGamePadState = GamePad.GetState((PlayerIndex.One));
 
-            CurrentKeyboardState = Keyboard.GetState((PlayerIndex.One));
-            CurrentGamePadState = GamePad.GetState((PlayerIndex.One));
-
-            if (CurrentGamePadState.IsConnected)
+            if (currentGamePadState.IsConnected)
             {
-                GamePadWasConnected = true;
+                gamePadWasConnected = true;
             }
         }
-
-        public bool IsNewKeyPress(Keys key, PlayerIndex? controllingPlayer,
-                                            out PlayerIndex playerIndex)
+        public bool isNewKeyPress(Keys key, PlayerIndex? thisPlayer, out PlayerIndex pIndex)
         {
-            if (controllingPlayer.HasValue)
+            if (thisPlayer.HasValue)
             {
-                // Read input from the specified player.
-                playerIndex = controllingPlayer.Value;
+                pIndex = thisPlayer.Value;
+                int i = (int)pIndex;
 
-                int i = (int)playerIndex;
-
-                return (CurrentKeyboardState.IsKeyDown(key) &&
-                        LastKeyboardState.IsKeyUp(key));
+                return (currentKeyboardState.IsKeyDown(key) && lastKeyboardState.IsKeyUp(key));
             }
             else
             {
-                // Accept input from any player.
-                return (IsNewKeyPress(key, PlayerIndex.One, out playerIndex) ||
-                        IsNewKeyPress(key, PlayerIndex.Two, out playerIndex) ||
-                        IsNewKeyPress(key, PlayerIndex.Three, out playerIndex) ||
-                        IsNewKeyPress(key, PlayerIndex.Four, out playerIndex));
+                return (isNewKeyPress(key, PlayerIndex.One, out pIndex));
             }
         }
-
-
-        /// <summary>
-        /// Helper for checking if a button was newly pressed during this update.
-        /// The controllingPlayer parameter specifies which player to read input for.
-        /// If this is null, it will accept input from any player. When a button press
-        /// is detected, the output playerIndex reports which player pressed it.
-        /// </summary>
-        public bool IsNewButtonPress(Buttons button, PlayerIndex? controllingPlayer,
-                                                     out PlayerIndex playerIndex)
+        public bool isNewButtonPress(Buttons b, PlayerIndex? thisPlayer, out PlayerIndex pIndex)
         {
-            if (controllingPlayer.HasValue)
+            if (thisPlayer.HasValue)
             {
-                // Read input from the specified player.
-                playerIndex = controllingPlayer.Value;
-
-                int i = (int)playerIndex;
-
-                return (CurrentGamePadState.IsButtonDown(button) &&
-                        LastGamePadState.IsButtonUp(button));
+                pIndex = thisPlayer.Value;
+                int i = (int)pIndex;
+                return (currentGamePadState.IsButtonDown(b) && lastGamePadState.IsButtonUp(b));
             }
             else
             {
-                // Accept input from any player.
-                return (IsNewButtonPress(button, PlayerIndex.One, out playerIndex) ||
-                        IsNewButtonPress(button, PlayerIndex.Two, out playerIndex) ||
-                        IsNewButtonPress(button, PlayerIndex.Three, out playerIndex) ||
-                        IsNewButtonPress(button, PlayerIndex.Four, out playerIndex));
+                return (isNewButtonPress(b, PlayerIndex.One, out pIndex));
             }
         }
-
-        public bool IsMenuSelect(PlayerIndex? controllingPlayer,
-                                 out PlayerIndex playerIndex)
+        public bool isSelect(PlayerIndex? thisPlayer, out PlayerIndex pIndex)
         {
-            return IsNewKeyPress(Keys.Space, controllingPlayer, out playerIndex) ||
-                   IsNewKeyPress(Keys.Enter, controllingPlayer, out playerIndex) ||
-                   IsNewButtonPress(Buttons.A, controllingPlayer, out playerIndex) ||
-                   IsNewButtonPress(Buttons.Start, controllingPlayer, out playerIndex);
+            return isNewKeyPress(Keys.Space, thisPlayer, out pIndex) || isNewKeyPress(Keys.Enter, thisPlayer, out pIndex) || isNewButtonPress(Buttons.A, thisPlayer, out pIndex) || isNewButtonPress(Buttons.Start, thisPlayer, out pIndex);
         }
-
-        public bool IsMenuCancel(PlayerIndex? controllingPlayer,
-                                 out PlayerIndex playerIndex)
+        public bool isCancel(PlayerIndex? thisPlayer, out PlayerIndex pIndex)
         {
-            return IsNewKeyPress(Keys.Escape, controllingPlayer, out playerIndex) ||
-                   IsNewButtonPress(Buttons.B, controllingPlayer, out playerIndex) ||
-                   IsNewButtonPress(Buttons.Back, controllingPlayer, out playerIndex);
+            return isNewKeyPress(Keys.Escape, thisPlayer, out pIndex) || isNewButtonPress(Buttons.B, thisPlayer, out pIndex) || isNewButtonPress(Buttons.Back, thisPlayer, out pIndex);
         }
-
-        public bool IsMenuUp(PlayerIndex? controllingPlayer)
+        public bool isMenuUp(PlayerIndex? thisPlayer)
         {
-            PlayerIndex playerIndex;
-
-            return IsNewKeyPress(Keys.Up, controllingPlayer, out playerIndex) ||
-                   IsNewButtonPress(Buttons.DPadUp, controllingPlayer, out playerIndex) ||
-                   IsNewButtonPress(Buttons.LeftThumbstickUp, controllingPlayer, out playerIndex);
+            PlayerIndex pIndex;
+            return isNewKeyPress(Keys.Up, thisPlayer, out pIndex) || isNewButtonPress(Buttons.DPadUp, thisPlayer, out pIndex) || isNewButtonPress(Buttons.LeftThumbstickUp, thisPlayer, out pIndex);
         }
-
-        public bool IsMenuDown(PlayerIndex? controllingPlayer)
+        public bool isMenuDown(PlayerIndex? thisPlayer)
         {
-            PlayerIndex playerIndex;
+            PlayerIndex pIndex;
 
-            return IsNewKeyPress(Keys.Down, controllingPlayer, out playerIndex) ||
-                   IsNewButtonPress(Buttons.DPadDown, controllingPlayer, out playerIndex) ||
-                   IsNewButtonPress(Buttons.LeftThumbstickDown, controllingPlayer, out playerIndex);
+            return isNewKeyPress(Keys.Down, thisPlayer, out pIndex) || isNewButtonPress(Buttons.DPadDown, thisPlayer, out pIndex) || isNewButtonPress(Buttons.LeftThumbstickDown, thisPlayer, out pIndex);
         }
-
-        public bool IsPauseGame(PlayerIndex? controllingPlayer)
+        public bool isPause(PlayerIndex? thisPlayer)
         {
-            PlayerIndex playerIndex;
+            PlayerIndex pIndex;
 
-            return IsNewKeyPress(Keys.Escape, controllingPlayer, out playerIndex) ||
-                   IsNewButtonPress(Buttons.Back, controllingPlayer, out playerIndex) ||
-                   IsNewButtonPress(Buttons.Start, controllingPlayer, out playerIndex);
+            return isNewKeyPress(Keys.Escape, thisPlayer, out pIndex) || isNewButtonPress(Buttons.Back, thisPlayer, out pIndex) || isNewButtonPress(Buttons.Start, thisPlayer, out pIndex);
         }
-
     }
 }
