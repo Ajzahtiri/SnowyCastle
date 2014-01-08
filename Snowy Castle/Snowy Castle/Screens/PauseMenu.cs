@@ -2,24 +2,24 @@
 
 namespace Snowy_Castle
 {
-    class PauseMenu : MenuScreen
+    class PauseMenu : menuScreen
     {
-        public PauseMenu() : base("Paused", 1)
+        public PauseMenu() : base("Paused")
         {
-            MenuItem resumeGameMenuEntry = new MenuItem("Resume Game");
-            MenuItem quitGameMenuEntry = new MenuItem("Quit Game");
+            menuItem resume = new menuItem("Resume Game");
+            menuItem quit = new menuItem("Quit Game");
 
-            resumeGameMenuEntry.Selected += OnCancel;
-            quitGameMenuEntry.Selected += QuitGameMenuEntrySelected;
+            resume.chosen += OnCancel;
+            quit.chosen += quitSelected;
 
-            MenuEntries.Add(resumeGameMenuEntry);
-            MenuEntries.Add(quitGameMenuEntry);
+            MenuEntries.Add(resume);
+            MenuEntries.Add(quit);
         }
 
-        void QuitGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
+        void quitSelected(object sender, playerEvent e)
         {
-            ScreenManager.AddScreen(new BackgroundScreen(), ControllingPlayer);
-            ScreenManager.AddScreen(new MainMenu(), ControllingPlayer);
+            SManager.AddScreen(new backgroundScreen(), thisPlayer);
+            SManager.AddScreen(new MainMenu(), thisPlayer);
         }
     }
 }

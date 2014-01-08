@@ -5,28 +5,28 @@ using System.Text;
 
 namespace Snowy_Castle
 {
-    class Loss1 : MenuScreen
+    class Loss1 : menuScreen
     {
-        public Loss1() : base("You didn't make it! Swamped by Snowballs!", 1)
+        public Loss1() : base("You lose!")
         {
-            MenuItem i1 = new MenuItem("Retry (from Level 1)");
-            MenuItem i2 = new MenuItem("Tunnel out! (to the Main Menu)");
+            menuItem i1 = new menuItem("Retry (from Level 1)");
+            menuItem i2 = new menuItem("Tunnel out! (to the Main Menu)");
 
-            i1.Selected += toLevel1;
-            i2.Selected += exit;
+            i1.chosen += toLevel1;
+            i2.chosen += exit;
 
             MenuEntries.Add(i1);
             MenuEntries.Add(i2);
         }
 
-        void toLevel1(object s, PlayerIndexEventArgs e)
+        void toLevel1(object s, playerEvent e)
         {
-            ScreenManager.AddScreen(new Level1(), e.PlayerIndex);
+            SManager.AddScreen(new Level1(), e.pIndex);
         }
 
-        void exit(object s, PlayerIndexEventArgs e)
+        void exit(object s, playerEvent e)
         {
-            ScreenManager.AddScreen(new MainMenu(), e.PlayerIndex);
+            SManager.AddScreen(new MainMenu(), e.pIndex);
         }
     }
 }

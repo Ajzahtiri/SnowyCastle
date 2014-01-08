@@ -2,36 +2,36 @@
 
 namespace Snowy_Castle
 {
-    class MainMenu : MenuScreen
+    class MainMenu : menuScreen
     {
-       public MainMenu() : base("Main Menu", 1)
+       public MainMenu() : base("Main Menu")
         {
-            MenuItem playL1 = new MenuItem("Play Level 1");
-            MenuItem playL2 = new MenuItem("Play Level 2");
-            MenuItem exitMenuEntry = new MenuItem("Exit");
+            menuItem playL1 = new menuItem("Play Level 1");
+            menuItem playL2 = new menuItem("Play Level 2");
+            menuItem exitMenuEntry = new menuItem("Exit");
 
-            playL1.Selected += PlayL1Selected;
-            playL2.Selected += PlayL2Selected;
-            exitMenuEntry.Selected += Exit;
+            playL1.chosen += PlayL1Selected;
+            playL2.chosen += PlayL2Selected;
+            exitMenuEntry.chosen += Exit;
 
             MenuEntries.Add(playL1);
             MenuEntries.Add(playL2);
             MenuEntries.Add(exitMenuEntry);
         }
 
-        void PlayL1Selected(object sender, PlayerIndexEventArgs e)
+        void PlayL1Selected(object sender, playerEvent e)
         {
-            ScreenManager.AddScreen(new Level1(), e.PlayerIndex);
+            SManager.AddScreen(new Level1(), e.pIndex);
         }
 
-        void PlayL2Selected(object sender, PlayerIndexEventArgs e)
+        void PlayL2Selected(object sender, playerEvent e)
         {
-            ScreenManager.AddScreen(new Level2(), e.PlayerIndex);
+            SManager.AddScreen(new Level2(), e.pIndex);
         }
 
-        void Exit(object sender, PlayerIndexEventArgs e)
+        void Exit(object sender, playerEvent e)
         {
-            ScreenManager.Game.Exit();
+            SManager.Game.Exit();
         }
     }
 }

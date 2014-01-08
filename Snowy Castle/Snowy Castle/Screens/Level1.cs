@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Snowy_Castle
 {
-    public class Level1 : GameScreen
+    public class Level1 : gameScreen
     {
         #region Initialisation
         //logic 
@@ -22,13 +22,13 @@ namespace Snowy_Castle
         private int score;
         private bool death;
         float pauseGradient;
+        Texture2D fadeRect;
 
         //time
         private int counterTime = 0;
         private int elapsedTime = 0;
         private int secondTime = 1000;
         private int spawnTime = 2000;
-
 
         //background
         Texture2D background;
@@ -44,9 +44,8 @@ namespace Snowy_Castle
         private Texture2D sbTex;
 
         //sounds
-        private SoundEffect impact;
-        private SoundEffect ouch;
-        private SoundEffect lose;
+        private SoundEffect impact, ouch, lose;
+        SoundEffectInstance impactInstance;
 
         //text
         SpriteFont periclesFont;
@@ -55,12 +54,11 @@ namespace Snowy_Castle
         String textString = "Hit by: ";
         String textString2 = "Time left: "; 
         int countdown = 20;
-        SoundEffectInstance impactInstance;
         
         public Level1()
         {
-            TransitionOnTime = TimeSpan.FromSeconds(1.5);
-            TransitionOffTime = TimeSpan.FromSeconds(0.5);
+            onTime = TimeSpan.FromSeconds(1.5);
+            offTime = TimeSpan.FromSeconds(0.5);
         }
         #endregion
         #region Load Content
@@ -68,30 +66,26 @@ namespace Snowy_Castle
         {
             if (content == null)
             {
-                content = new ContentManager(ScreenManager.Game.Services, "Content");
+                content = new ContentManager(SManager.Game.Services, "Content");
             }
 
             //background
-            spriteBatch = new SpriteBatch(ScreenManager.GraphicsDevice);
+            spriteBatch = new SpriteBatch(SManager.GraphicsDevice);
             background = content.Load<Texture2D>("Textures\\Winter_Castle");
-            viewportRect = new Rectangle(0, 0, ScreenManager.GraphicsDevice.Viewport.Width, ScreenManager.GraphicsDevice.Viewport.Height);
+            viewportRect = new Rectangle(0, 0, SManager.GraphicsDevice.Viewport.Width, SManager.GraphicsDevice.Viewport.Height);
+            fadeRect = new Texture2D(SManager.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
+            fadeRect.SetData(new[] { Color.White });
 
             //snowballs
-            sbs = new List<L1Sprite>(1000);
-            inactive = new List<L1Sprite>(1000);
-            hit = new List<L1Sprite>(1000);
+            sbs = new List<L1Sprite>(100000);
+            inactive = new List<L1Sprite>(100000);
+            hit = new List<L1Sprite>(100000);
             sbTex = content.Load<Texture2D>("Textures\\Snowball");
             sbs.Add(CreateSb());
             
             //player
             pTex = content.Load<Texture2D>("Textures\\Run");
-            pSprite = new L1Player(pTex,
-                new Vector2(pTex.Height / 2, pTex.Height / 2),
-                new Vector2(300, 420),
-                new Rectangle(0, 0, 64, pTex.Height),                
-                new Vector2(0, 0),
-                1, 11, 10
-                );
+            pSprite = new L1Player(pTex, new Vector2(pTex.Height / 2, pTex.Height / 2), new Vector2(300, 420), new Rectangle(0, 0, 64, pTex.Height), new Vector2(0, 0), 1, 11, 10);
             sbs.Add(pSprite);
 
             //sounds
@@ -102,20 +96,12 @@ namespace Snowy_Castle
 
             //text
             periclesFont = content.Load<SpriteFont>("Fonts\\Pericles");
-
         }
 
         private L1Sprite CreateSb()
         {
             Random rand = new Random();
-            return new L1Sprite(sbTex,
-                new Vector2(15, 15),
-                new Vector2(
-                    (float)rand.Next(0, viewportRect.Width),
-                    (float)0),
-                new Rectangle(0, 0, 29, 29),
-                new Vector2(0, rand.Next(1, 8)),
-                rand.Next(2, 10) * 0.1f);
+            return new L1Sprite(sbTex, new Vector2(15, 15), new Vector2((float)rand.Next(0, viewportRect.Width), (float)0), new Rectangle(0, 0, 29, 29), new Vector2(0, rand.Next(1, 8)), rand.Next(2, 10) * 0.1f);
         }
 
         public override void UnloadContent()
@@ -127,7 +113,7 @@ namespace Snowy_Castle
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
             base.Update(gameTime, otherScreenHasFocus, false);
-
+            #region Pause Gradient
             if (coveredByOtherScreen)
             {
                 pauseGradient = Math.Min(pauseGradient + 1f / 32, 1);
@@ -136,20 +122,24 @@ namespace Snowy_Castle
             {
                 pauseGradient = Math.Max(pauseGradient - 1f / 32, 0);
             }
-
-            if (IsActive)
+            #endregion
+            #region Timer Updates
+            if (active)
             {
                 Random rand = new Random();
                 elapsedTime += gameTime.ElapsedGameTime.Milliseconds;
                 counterTime += gameTime.ElapsedGameTime.Milliseconds;
 
+            #endregion
+                #region Spawn Snowballs
                 if (elapsedTime > spawnTime)
                 {
                     elapsedTime -= spawnTime;
                     sbs.Add(CreateSb());
-                    spawnTime = rand.Next(300, 2000);
+                    spawnTime = rand.Next(300, 1500);
                 }
-
+                #endregion
+                #region Countdown Timer
                 if (counterTime > secondTime)
                 {
                     counterTime -= secondTime;
@@ -162,7 +152,8 @@ namespace Snowy_Castle
                         countdown = 0;
                     }
                 }
-
+                #endregion
+                #region Check collision, land, vibrate, sound play
                 foreach (L1Sprite s in sbs)
                 {
                     s.Update(gameTime, viewportRect);
@@ -203,51 +194,54 @@ namespace Snowy_Castle
                     }
 
                 }
-
+                #endregion
+                #region Remove Dead Snowballs
                 foreach (L1Sprite s in hit)
                 {
                     sbs.Remove(s);
                 }
-
-                foreach (L1Sprite s in inactive)
-                {
-
-                }
-
+                #endregion
+                #region Check for Death
                 if (!death)
                 {
                     if (score >= 5)
                     {
                         lose.Play();
                         death = true;
-                        ScreenManager.AddScreen(new Loss1(), null);
+                        SManager.AddScreen(new Loss1(), null);
                     }
                 }
-
+                #endregion
+                #region Fade to Black
+                if (countdown == 4)
+                {
+                    fadeBlack(10.0f);
+                }
+                #endregion
+                #region Check for Win
                 if (countdown == 0 && score < 5)
                 {
-                    ScreenManager.AddScreen(new Victory1(), null);
+                    SManager.AddScreen(new Victory1(), null);
                 }
-
-                
+                #endregion
             }
         }
 
-        public override void HandleInput(InputState input)
+        public override void HandleInput(inputState input)
         {
-            KeyboardState keyboardState = input.CurrentKeyboardState;
-            GamePadState gamePadState = input.CurrentGamePadState;
+            KeyboardState keyboardState = input.currentKeyboardState;
+            GamePadState gamePadState = input.currentGamePadState;
 
-            if (input.IsPauseGame(ControllingPlayer))
+            if (input.isPause(thisPlayer))
             {
-                ScreenManager.AddScreen(new PauseMenu(), ControllingPlayer);
+                SManager.AddScreen(new PauseMenu(), thisPlayer);
             }           
         }
         #endregion
         #region Draw
         public override void Draw(GameTime gameTime)
         {
-            ScreenManager.GraphicsDevice.Clear(Color.CornflowerBlue);
+            SManager.GraphicsDevice.Clear(Color.CornflowerBlue);
 
             spriteBatch.Begin();
             spriteBatch.Draw(background, viewportRect, Color.White);
@@ -261,6 +255,13 @@ namespace Snowy_Castle
             spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+        
+        public void fadeBlack(float alpha)
+        {
+            spriteBatch.Begin();
+            spriteBatch.Draw(background, new Rectangle(0, 0, viewportRect.Width, viewportRect.Height), Color.Black * alpha);
+            spriteBatch.End();
         }
         #endregion
     }

@@ -2,28 +2,28 @@
 
 namespace Snowy_Castle
 {
-    class Victory1 : MenuScreen
+    class Victory1 : menuScreen
     {
-        public Victory1() : base("Congratulations! You survived! But then...", 1)
+        public Victory1() : base("You win! But then...")
         {
-            MenuItem i1 = new MenuItem("Proceed to Level 2");
-            MenuItem i2 = new MenuItem("Flee! (to the Main Menu)");
+            menuItem i1 = new menuItem("Proceed to Level 2");
+            menuItem i2 = new menuItem("Flee! (to the Main Menu)");
 
-            i1.Selected += toLevel2;
-            i2.Selected += exit;
+            i1.chosen += toLevel2;
+            i2.chosen += exit;
 
             MenuEntries.Add(i1);
             MenuEntries.Add(i2);
         }
 
-        void toLevel2(object s, PlayerIndexEventArgs e)
+        void toLevel2(object s, playerEvent e)
         {
-            ScreenManager.AddScreen(new Level2(), e.PlayerIndex);
+            SManager.AddScreen(new Level2(), e.pIndex);
         }
 
-        void exit(object s, PlayerIndexEventArgs e)
+        void exit(object s, playerEvent e)
         {
-            ScreenManager.AddScreen(new MainMenu(), e.PlayerIndex);
+            SManager.AddScreen(new MainMenu(), e.pIndex);
         }
     }
 }

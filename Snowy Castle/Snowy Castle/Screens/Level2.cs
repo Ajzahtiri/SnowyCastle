@@ -13,7 +13,7 @@ using System.IO;
 
 namespace Snowy_Castle
 {
-    public class Level2 : GameScreen
+    public class Level2 : gameScreen
     {
         #region Initialisation
         //logic 
@@ -24,8 +24,6 @@ namespace Snowy_Castle
         private int score;
         private int lives = 5;
         float pauseGradient;
-        int prevhs = 0;
-        int temp = 0;
 
         //time
         private int elapsedTime = 0;
@@ -48,7 +46,7 @@ namespace Snowy_Castle
 
         //lists 
         private List<L2Sprite> sbs, inactive, hit;
-        private List<Bullet> allBullets = new List<Bullet>(100);
+        private List<Bullet> goodBullets = new List<Bullet>(100);
         private List<Bullet> deadBullets = new List<Bullet>(10000000);
 
         //sounds
@@ -65,44 +63,34 @@ namespace Snowy_Castle
 
         public Level2()
         {
-            TransitionOnTime = TimeSpan.FromSeconds(1.5);
-            TransitionOffTime = TimeSpan.FromSeconds(0.5);
+            onTime = TimeSpan.FromSeconds(1.5);
+            offTime = TimeSpan.FromSeconds(0.5);
         }
         #endregion
-
         #region Load Content
         public override void LoadContent()
         {
             if (content == null)
             {
-                content = new ContentManager(ScreenManager.Game.Services, "Content");
+                content = new ContentManager(SManager.Game.Services, "Content");
             }
 
             //background
-            spriteBatch = new SpriteBatch(ScreenManager.GraphicsDevice);
+            spriteBatch = new SpriteBatch(SManager.GraphicsDevice);
             background = new Background();
             Texture2D bg = content.Load<Texture2D>("Textures\\space");
-            background.Load(ScreenManager.GraphicsDevice, bg);
-            viewportRect = new Rectangle(0, 0, ScreenManager.GraphicsDevice.Viewport.Width, ScreenManager.GraphicsDevice.Viewport.Height);
-
+            background.Load(SManager.GraphicsDevice, bg);
+            viewportRect = new Rectangle(0, 0, SManager.GraphicsDevice.Viewport.Width, SManager.GraphicsDevice.Viewport.Height);
 
             //enemies
-            sbs = new List<L2Sprite>(1000);
-            inactive = new List<L2Sprite>(1000);
-            hit = new List<L2Sprite>(1000);
+            sbs = new List<L2Sprite>(1000000);
+            inactive = new List<L2Sprite>(1000000);
+            hit = new List<L2Sprite>(1000000);
             eTex = content.Load<Texture2D>("Textures\\eSpaceship");
-            for (int i = 0; i < 10; i++)
-            {
-                sbs.Add(CreateEnemy());
-            }
 
             //player
             pTex = content.Load<Texture2D>("Textures\\pSpaceship");
-            pSprite = new L2Player(pTex,
-                new Vector2(pTex.Height / 2, pTex.Height / 2),
-                new Vector2(300, 420),
-                new Rectangle(0, 0, pTex.Width, pTex.Height),
-                new Vector2(0, 0));
+            pSprite = new L2Player(pTex, new Vector2(pTex.Height / 2, pTex.Height / 2), new Vector2(300, 420), new Rectangle(0, 0, pTex.Width, pTex.Height), new Vector2(0, 0));
             sbs.Add(pSprite);
 
             //sounds
@@ -127,7 +115,6 @@ namespace Snowy_Castle
 
         }
         #endregion
-
         #region Updates
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
@@ -144,7 +131,7 @@ namespace Snowy_Castle
                 pauseGradient = Math.Max(pauseGradient - 1f / 32, 0);
             }
 
-            if (IsActive)
+            if (active)
             {
                 Random rand = new Random();
                 elapsedTime += gameTime.ElapsedGameTime.Milliseconds;
@@ -187,9 +174,9 @@ namespace Snowy_Castle
                             }
                         }
 
-                        foreach (Bullet b in allBullets)
+                        foreach (Bullet b in goodBullets)
                         {
-                            if (b.isVisible)
+                            if (b.live)
                             {
                                 if (b.CollidesWith(s))
                                 {
@@ -210,21 +197,14 @@ namespace Snowy_Castle
 
                 if (timeLeft == 0)
                 {
-                    
-                    if (score > prevhs)
-                    {
-                        temp = prevhs;
-                        prevhs = score;
-                    }
-                    ScreenManager.AddScreen(new Victory2(score, temp), null);
-                
+                    SManager.AddScreen(new Victory2(score), null);                
                 }
 
                 //check for death
                 if (lives <= 0)
                 {
                     explode.Play();
-                    ScreenManager.AddScreen(new Loss2(), null);
+                    SManager.AddScreen(new Loss2(), null);
                 }
 
                 foreach (L2Sprite s in hit)
@@ -239,7 +219,7 @@ namespace Snowy_Castle
 
                 foreach (Bullet b in deadBullets)
                 {
-                    allBullets.Remove(b);
+                    goodBullets.Remove(b);
                 }
             }
 
@@ -248,20 +228,20 @@ namespace Snowy_Castle
 
         public void UpdateBullets()
         {
-            foreach (Bullet b in allBullets)
+            foreach (Bullet b in goodBullets)
             {
                 b.screenPos += b.velocity;
                 if (Vector2.Distance(b.screenPos, pSprite.getPos()) > 600)
                 {
-                    b.isVisible = false;
+                    b.live = false;
                 }
             }
 
-            for (int i = 0; i < allBullets.Count; i++)
+            for (int i = 0; i < goodBullets.Count; i++)
             {
-                if (!allBullets[i].isVisible)
+                if (!goodBullets[i].live)
                 {
-                    allBullets.RemoveAt(i);
+                    goodBullets.RemoveAt(i);
                     i--;
                 }
             }
@@ -272,22 +252,22 @@ namespace Snowy_Castle
             Bullet newBullet = new Bullet((content.Load<Texture2D>("Textures\\pBullet")));
             newBullet.velocity = new Vector2((float)Math.Sin(rotation), (float)Math.Cos(rotation)) * new Vector2(5f, -5f) + pSprite.getVel();
             newBullet.screenPos = pSprite.getPos() + newBullet.velocity * 5;
-            newBullet.isVisible = true;
+            newBullet.live = true;
 
-            if (allBullets.Count < 100)
+            if (goodBullets.Count < 100)
             {
-                allBullets.Add(newBullet);
+                goodBullets.Add(newBullet);
             }
         }
 
-        public override void HandleInput(InputState input)
+        public override void HandleInput(inputState input)
         {
-            KeyboardState keyboardState = input.CurrentKeyboardState;
-            GamePadState gamePadState = input.CurrentGamePadState;
+            KeyboardState keyboardState = input.currentKeyboardState;
+            GamePadState gamePadState = input.currentGamePadState;
 
-            if (input.IsPauseGame(ControllingPlayer))
+            if (input.isPause(thisPlayer))
             {
-                ScreenManager.AddScreen(new PauseMenu(), ControllingPlayer);
+                SManager.AddScreen(new PauseMenu(), thisPlayer);
 
             }
 
@@ -326,7 +306,7 @@ namespace Snowy_Castle
         #region Draw
         public override void Draw(GameTime gameTime)
         {
-            ScreenManager.GraphicsDevice.Clear(Color.CornflowerBlue);
+            SManager.GraphicsDevice.Clear(Color.CornflowerBlue);
 
             spriteBatch.Begin();
             background.Draw(spriteBatch);
@@ -345,7 +325,7 @@ namespace Snowy_Castle
                 }
             }
 
-            foreach (Bullet b in allBullets)
+            foreach (Bullet b in goodBullets)
             {
                 b.Draw(spriteBatch);
                 b.Update(gameTime, viewportRect);                
