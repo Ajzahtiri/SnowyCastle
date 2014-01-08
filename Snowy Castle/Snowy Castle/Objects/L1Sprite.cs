@@ -13,11 +13,8 @@ namespace Snowy_Castle
         protected Vector2 centre, velocity, screenPos;
         protected Rectangle sourceRect;
         protected float size;
-        private bool facingBackwards = true;
-        protected bool hasCollided;
-        protected bool hasLanded;
-        protected bool hasPlayed;
-
+        protected bool facingBackwards = true;
+        protected bool hasCollided, hasLanded, hasPlayed;
        
         public L1Sprite(Texture2D tex, Vector2 centre, Vector2 pos, Rectangle sourceRect, Vector2 vel)
         {
@@ -50,6 +47,32 @@ namespace Snowy_Castle
             }
         }
 
+        #region Get/Sets
+        public Vector2 getPos()
+        {
+            return screenPos;
+        }
+
+        public void setVelocityX(int x)
+        {
+            this.velocity.X = x;
+        }
+
+        public void incVelX()
+        {
+            this.velocity.X += 0.02f;
+        }
+
+        public void decVelX()
+        {
+            this.velocity.X -= 0.02f;
+        }
+
+        public void setVelocityY(int y)
+        {
+            this.velocity.Y = y;
+        }
+
         public void setBackwards(bool b)
         {
             this.facingBackwards = b;
@@ -69,7 +92,7 @@ namespace Snowy_Castle
         {
             return hasPlayed;
         }
-
+        
         public void setPlayed()
         {
             this.hasPlayed = true;
@@ -90,11 +113,12 @@ namespace Snowy_Castle
             this.hasLanded = b;
         }
 
+        #endregion
+
         public virtual bool CollidesWith(L1Sprite sprite)
         {
             return this.BoundingBox.Intersects(sprite.BoundingBox);
         }
-
 
         public virtual void Update(GameTime gameTime, Rectangle viewportRect)
         {
@@ -145,30 +169,6 @@ namespace Snowy_Castle
                 sb.Draw(texture, screenPos, sourceRect, col, 0.0f, centre, this.size, SpriteEffects.None, 0);
             }
         }
-
-        public Vector2 getPos()
-        {
-            return screenPos;
-        }
-
-        public void setVelocityX(int x)
-        {
-            this.velocity.X = x;
-        }
-
-        public void incVelX()
-        {
-            this.velocity.X += 0.02f;
-        }
-
-        public void decVelX()
-        {
-            this.velocity.X -= 0.02f;
-        }
-
-        public void setVelocityY(int y)
-        {
-            this.velocity.Y = y;
-        }
+       
     }
 }

@@ -15,17 +15,15 @@ namespace Snowy_Castle
     public class Bullet
     {
         public Texture2D texture;
-        public Vector2 screenPos;
+        public Vector2 screenPos, velocity, center;
         public Rectangle sourceRect;
-        public Vector2 velocity;
-        public Vector2 origin;
-        public bool isVisible;
+        public bool live;
 
-        public Bullet(Texture2D newTexture)
+        public Bullet(Texture2D tex)
         {
-            texture = newTexture;
-            origin = new Vector2(texture.Width / 2, texture.Height / 2);
-            isVisible = false;
+            texture = tex;
+            center = new Vector2(texture.Width / 2, texture.Height / 2);
+            live = false;
         }
 
         public virtual void Update(GameTime gameTime, Rectangle viewportRect)
@@ -34,7 +32,6 @@ namespace Snowy_Castle
             //right
             if (screenPos.X + sourceRect.Width / 2 > viewportRect.Right)
             {
-                // velocity.X *= -1;
                 screenPos.X = viewportRect.Left + sourceRect.Width / 2;
             }
 
@@ -44,20 +41,18 @@ namespace Snowy_Castle
                 velocity.Y *= 0;
                 velocity.X *= 0;
                 screenPos.Y = viewportRect.Height + 50;
-
             }
 
             //left
             if (screenPos.X < viewportRect.Left + sourceRect.Width / 2)
             {
-                //  velocity.X *= -1;
                 screenPos.X = viewportRect.Right - sourceRect.Width / 2;
             }
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, screenPos, null, Color.White, 0.0f, origin, 1f, SpriteEffects.None, 1);
+            spriteBatch.Draw(texture, screenPos, null, Color.White, 0.0f, center, 1f, SpriteEffects.None, 1);
         }
 
         public Rectangle BoundingBox

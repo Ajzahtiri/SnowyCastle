@@ -10,16 +10,13 @@ namespace Snowy_Castle
     public class L2Sprite
     {
         protected Texture2D texture;
-        protected int health = 10;
         protected Vector2 centre, velocity, screenPos;
-        public float rotation;
         protected Rectangle sourceRect;
+        public float rotation;
         protected float size;
+        protected int health = 10;
         private bool facingBackwards = true;
-        protected bool hasCollided;
-        protected bool hasLanded;
-        protected bool hasPlayed;
-
+        protected bool hasCollided, hasLanded, hasPlayed;
 
         public L2Sprite(Texture2D tex, Vector2 centre, Vector2 pos, Rectangle sourceRect, Vector2 vel)
         {
@@ -43,11 +40,11 @@ namespace Snowy_Castle
             }
         }
 
+        #region Get/sets
         public void setRotation(float f)
         {
             this.rotation += f;
         }
-
 
         public float getRotation()
         {
@@ -109,6 +106,36 @@ namespace Snowy_Castle
             return this.BoundingBox.Intersects(sprite.BoundingBox);
         }
 
+        public Vector2 getPos()
+        {
+            return screenPos;
+        }
+
+        public void setVelocityX(int x)
+        {
+            this.velocity.X = x;
+        }
+
+        public void incVelX()
+        {
+            this.velocity.X += 0.02f;
+        }
+
+        public void decVelX()
+        {
+            this.velocity.X -= 0.02f;
+        }
+
+        public void setVelocityY(int y)
+        {
+            this.velocity.Y = y;
+        }
+
+        public Vector2 getVel()
+        {
+            return velocity;
+        }
+        #endregion
 
         public virtual void Update(GameTime gameTime, Rectangle viewportRect)
         {
@@ -161,36 +188,6 @@ namespace Snowy_Castle
         public virtual void Draw(GameTime gameTime, SpriteBatch sb, Color col)
         {
             sb.Draw(texture, screenPos, sourceRect, col, rotation, centre, this.size, SpriteEffects.None, 0);
-        }
-
-        public Vector2 getPos()
-        {
-            return screenPos;
-        }
-
-        public void setVelocityX(int x)
-        {
-            this.velocity.X = x;
-        }
-
-        public void incVelX()
-        {
-            this.velocity.X += 0.02f;
-        }
-
-        public void decVelX()
-        {
-            this.velocity.X -= 0.02f;
-        }
-
-        public void setVelocityY(int y)
-        {
-            this.velocity.Y = y;
-        }
-
-        public Vector2 getVel()
-        {
-            return velocity;
         }
     }
 }

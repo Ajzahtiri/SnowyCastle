@@ -6,19 +6,10 @@ namespace Snowy_Castle
 {
     class L1Player : L1Sprite
     {
-        private int rows;
-        private int columns;
-        private int frames;
-        private int currentFrame;
+        private int rows, columns, frames, currentFrame;
         private int elapsedTime = 0;
         private int setTime = 75;
         private int level = 1;
-
-        //level 2
-        public L1Player(Texture2D tex, Vector2 centre, Vector2 pos, Rectangle sourceRect, Vector2 vel) : base(tex, centre, pos, sourceRect, vel)
-        {
-            level = 2;
-        }
 
         //level 1
         public L1Player(Texture2D tex, Vector2 centre, Vector2 pos, Rectangle sourceRect, Vector2 vel, int rows, int columns, int frames):  base(tex, centre, pos, sourceRect, vel)

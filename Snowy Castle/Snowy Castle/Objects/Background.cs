@@ -9,32 +9,32 @@ namespace Snowy_Castle
 {
     public class Background
     {
-        private Vector2 screenpos, origin, texturesize;
-        private Texture2D mytexture;
-        private int screenheight;
-        public void Load(GraphicsDevice device, Texture2D backgroundTexture)
+        private Vector2 screenPos, center, bgSize;
+        private Texture2D myBg;
+        private int screenHeight;
+        public void Load(GraphicsDevice d, Texture2D bgTexture)
         {
-            mytexture = backgroundTexture;
-            screenheight = device.Viewport.Height;
-            int screenwidth = device.Viewport.Width;
-            origin = new Vector2(mytexture.Width / 2, 0);
-            screenpos = new Vector2(screenwidth / 2, screenheight / 2);
-            texturesize = new Vector2(0, mytexture.Height);
+            myBg = bgTexture;
+            screenHeight = d.Viewport.Height;
+            int screenwidth = d.Viewport.Width;
+            center = new Vector2(myBg.Width / 2, 0);
+            screenPos = new Vector2(screenwidth / 2, screenHeight / 2);
+            bgSize = new Vector2(0, myBg.Height);
         }
 
-        public void Update(float deltaY)
+        public void Update(float d)
         {
-            screenpos.Y += deltaY;
-            screenpos.Y = screenpos.Y % mytexture.Height;
+            screenPos.Y += d;
+            screenPos.Y = screenPos.Y % myBg.Height;
         }
 
-        public void Draw(SpriteBatch batch)
+        public void Draw(SpriteBatch b)
         {
-            if (screenpos.Y < screenheight)
+            if (screenPos.Y < screenHeight)
             {
-                batch.Draw(mytexture, screenpos, null, Color.White, 0, origin, 1, SpriteEffects.None, 0f);
+                b.Draw(myBg, screenPos, null, Color.White, 0, center, 1, SpriteEffects.None, 0f);
             }
-            batch.Draw(mytexture, screenpos - texturesize, null, Color.White, 0, origin, 1, SpriteEffects.None, 0f);
+            b.Draw(myBg, screenPos - bgSize, null, Color.White, 0, center, 1, SpriteEffects.None, 0f);
         }
     }
 }
