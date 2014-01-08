@@ -11,7 +11,7 @@ namespace Snowy_Castle
     public class Program : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
-        ScreenManager screenManager;
+        screenManager screenManager;
 
         public Program()
         {
@@ -19,9 +19,9 @@ namespace Snowy_Castle
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = 648;
             graphics.PreferredBackBufferHeight = 486;
-            screenManager = new ScreenManager(this);
+            screenManager = new screenManager(this);
             Components.Add(screenManager);
-            screenManager.AddScreen(new BackgroundScreen(), null);
+            screenManager.AddScreen(new backgroundScreen(), null);
             screenManager.AddScreen(new MainMenu(), null);
         }
 
