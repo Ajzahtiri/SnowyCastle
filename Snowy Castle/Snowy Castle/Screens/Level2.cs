@@ -48,6 +48,7 @@ namespace Snowy_Castle
         private List<L2Sprite> sbs, inactive, hit;
         private List<Bullet> goodBullets = new List<Bullet>(100);
         private List<Bullet> deadBullets = new List<Bullet>(10000000);
+        private List<Bullet> evilBullets = new List<Bullet>(100);
 
         //sounds
         private SoundEffect explode, shoot;
@@ -159,10 +160,13 @@ namespace Snowy_Castle
                     s.Update(gameTime, viewportRect);
                     elapsedTime3 += gameTime.ElapsedGameTime.Milliseconds;
                     rotationTime = rand.Next(1, 4);
+
+                    
                  
 
                     if (s != pSprite)
                     {
+                        enemyShoot(s);
                         if (s.CollidesWith(pSprite))
                         {
                             if (!s.getLanded() && !s.getCollided())
@@ -193,6 +197,8 @@ namespace Snowy_Castle
                             }
                         }
                     }
+
+                    updateEvilBullets(s);
                 }
 
                 if (timeLeft == 0)
@@ -206,6 +212,15 @@ namespace Snowy_Castle
                     explode.Play();
                     SManager.AddScreen(new Loss2(), null);
                 }
+
+                foreach (L2Sprite s in sbs)
+                {
+                    if (s.getDie())
+                    {
+                        inactive.Add(s);
+                    }
+                }
+
 
                 foreach (L2Sprite s in hit)
                 {
@@ -223,10 +238,23 @@ namespace Snowy_Castle
                 }
             }
 
-            UpdateBullets();
+            updateBullets();
         }
 
-        public void UpdateBullets()
+        public void playerShoot()
+        {
+            Bullet newBullet = new Bullet((content.Load<Texture2D>("Textures\\pBullet")));
+            newBullet.velocity = new Vector2((float)Math.Sin(rotation), (float)Math.Cos(rotation)) * new Vector2(5f, -5f) + pSprite.getVel();
+            newBullet.screenPos = pSprite.getPos() + newBullet.velocity * 5;
+            newBullet.live = true;
+
+            if (goodBullets.Count < 100)
+            {
+                goodBullets.Add(newBullet);
+            }
+        }
+
+        public void updateBullets()
         {
             foreach (Bullet b in goodBullets)
             {
@@ -247,18 +275,36 @@ namespace Snowy_Castle
             }
         }
 
-        public void PlayerShoot()
+        public void enemyShoot(L2Sprite enemy)
         {
-            Bullet newBullet = new Bullet((content.Load<Texture2D>("Textures\\pBullet")));
-            newBullet.velocity = new Vector2((float)Math.Sin(rotation), (float)Math.Cos(rotation)) * new Vector2(5f, -5f) + pSprite.getVel();
-            newBullet.screenPos = pSprite.getPos() + newBullet.velocity * 5;
-            newBullet.live = true;
+            Bullet newB = new Bullet((content.Load<Texture2D>("Textures\\eBullet")), enemy);
+            newB.velocity = new Vector2((float)Math.Sin(enemy.rotation), (float)Math.Cos(enemy.rotation)) * new Vector2(0f, 4f);
+            newB.screenPos = enemy.getPos() + newB.velocity * 3;
+            newB.live = true;
 
-            if (goodBullets.Count < 100)
-            {
-                goodBullets.Add(newBullet);
-            }
+            evilBullets.Add(newB);
         }
+
+        public void updateEvilBullets(L2Sprite enemy)
+        {
+            foreach (Bullet b in evilBullets)
+            {
+                b.screenPos += b.velocity;
+                if (Vector2.Distance(b.screenPos, enemy.getPos()) > 600)
+                {
+                    b.live = false;
+                }
+            }
+
+            for (int i = 0; i < evilBullets.Count; i++)
+            { 
+                if (!evilBullets[i].live)
+                {
+                    evilBullets.RemoveAt(i);
+                    i--;
+                }
+            }
+        }        
 
         public override void HandleInput(inputState input)
         {
@@ -273,7 +319,7 @@ namespace Snowy_Castle
 
             if (keyboardState.IsKeyDown(Keys.Space) || gamePadState.Triggers.Right > 0)
             {
-                PlayerShoot();
+                playerShoot();
                 shoot.Play();
             }
 
@@ -329,6 +375,12 @@ namespace Snowy_Castle
             {
                 b.Draw(spriteBatch);
                 b.Update(gameTime, viewportRect);                
+            }
+
+            foreach (Bullet b in evilBullets)
+            {
+                b.Draw(spriteBatch);
+                b.Update(gameTime, viewportRect);
             }
           
             spriteBatch.End();

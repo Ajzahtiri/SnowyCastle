@@ -16,7 +16,7 @@ namespace Snowy_Castle
         protected float size;
         protected int health = 10;
         private bool facingBackwards = true;
-        protected bool hasCollided, hasLanded, hasPlayed;
+        protected bool hasCollided, hasLanded, hasPlayed, toDie;
 
         public L2Sprite(Texture2D tex, Vector2 centre, Vector2 pos, Rectangle sourceRect, Vector2 vel)
         {
@@ -27,6 +27,7 @@ namespace Snowy_Castle
             this.sourceRect = sourceRect;
             this.velocity = vel;
             this.size = 1;
+            toDie = false;
         }
 
         public Rectangle BoundingBox
@@ -153,7 +154,7 @@ namespace Snowy_Castle
                 velocity.Y *= 0;
                 velocity.X *= 0;
                 screenPos.Y = viewportRect.Height + 50;
-
+                toDie = true;
             }
 
             //left
@@ -188,6 +189,11 @@ namespace Snowy_Castle
         public virtual void Draw(GameTime gameTime, SpriteBatch sb, Color col)
         {
             sb.Draw(texture, screenPos, sourceRect, col, rotation, centre, this.size, SpriteEffects.None, 0);
+        }
+
+        public bool getDie()
+        {
+            return toDie;
         }
     }
 }

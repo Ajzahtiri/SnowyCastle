@@ -17,6 +17,7 @@ namespace Snowy_Castle
         public Texture2D texture;
         public Vector2 screenPos, velocity, center;
         public Rectangle sourceRect;
+        public L2Sprite enemy;
         public bool live;
 
         public Bullet(Texture2D tex)
@@ -24,6 +25,14 @@ namespace Snowy_Castle
             texture = tex;
             center = new Vector2(texture.Width / 2, texture.Height / 2);
             live = false;
+        }
+
+        public Bullet(Texture2D tex, L2Sprite e)
+        {
+            texture = tex;
+            center = new Vector2(texture.Width / 2, texture.Height / 2);
+            live = false;
+            this.enemy = e;
         }
 
         public virtual void Update(GameTime gameTime, Rectangle viewportRect)
@@ -40,7 +49,7 @@ namespace Snowy_Castle
             {
                 velocity.Y *= 0;
                 velocity.X *= 0;
-                screenPos.Y = viewportRect.Height + 50;
+                live = false;
             }
 
             //left
