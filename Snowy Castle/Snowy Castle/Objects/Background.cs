@@ -18,20 +18,20 @@ namespace Snowy_Castle
             myBg = bgTexture;
             screenHeight = d.Viewport.Height;
             screenWidth = d.Viewport.Width;
-            center = new Vector2(0, screenHeight / 2);
+            center = new Vector2(screenWidth / 2, 0);
             screenPos = new Vector2(screenWidth / 2, screenHeight / 2);
-            bgSize = new Vector2(myBg.Width, 0);
+            bgSize = new Vector2(0, myBg.Height);
         }
 
         public void Update(float d)
         {
-            screenPos.X += d;
-            screenPos.X = screenPos.X % myBg.Width;
+            screenPos.Y += d;
+            screenPos.Y = screenPos.Y % myBg.Height;
         }
 
         public void Draw(SpriteBatch b)
         {
-            if (screenPos.X < screenWidth)
+            if (screenPos.Y < screenHeight)
             {
                 b.Draw(myBg, screenPos, null, Color.White, 0, center, 1, SpriteEffects.None, 0f);
             }

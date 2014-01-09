@@ -21,14 +21,6 @@ namespace Snowy_Castle
         protected void ProcessInput()
         {
             GamePadState gamePadState = GamePad.GetState(PlayerIndex.One);
-            if (gamePadState.ThumbSticks.Left.X > 0)
-            {
-                setBackwards(false);
-            }
-            else if (gamePadState.ThumbSticks.Left.X < 0)
-            {
-                setBackwards(true);
-            }
 
             velocity.X += (gamePadState.ThumbSticks.Left.X / 2);
 
@@ -44,7 +36,6 @@ namespace Snowy_Castle
             if (keyboardState.IsKeyDown(Keys.D))
             {
                 velocity.X += 0.5f;
-                setBackwards(false);
 
             }
         }
