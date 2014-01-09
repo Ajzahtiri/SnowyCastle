@@ -18,7 +18,6 @@ namespace Snowy_Castle
         #region Initialisation
         //logic 
         SpriteBatch spriteBatch;
-        private float rotation = 0;
         Rectangle viewportRect;
         ContentManager content;
         private int score;
@@ -28,11 +27,9 @@ namespace Snowy_Castle
         //time
         private int elapsedTime = 0;
         private int elapsedTime2 = 0;
-        private int elapsedTime3 = 0;
         private int secondTime = 1000;
         private int spawnTime = 1;
         private int timeLeft = 600;
-        private int rotationTime;
 
         //player
         Texture2D pTex;
@@ -45,7 +42,7 @@ namespace Snowy_Castle
         private Texture2D eTex;
 
         //lists 
-        private List<L2Sprite> sbs, inactive, hit;
+        private List<L2Enemy> enemies, inactive, hit;
         private List<Bullet> goodBullets = new List<Bullet>(100);
         private List<Bullet> deadBullets = new List<Bullet>(10000000);
         private List<Bullet> evilBullets = new List<Bullet>(100);
@@ -84,15 +81,14 @@ namespace Snowy_Castle
             viewportRect = new Rectangle(0, 0, SManager.GraphicsDevice.Viewport.Width, SManager.GraphicsDevice.Viewport.Height);
 
             //enemies
-            sbs = new List<L2Sprite>(1000000);
-            inactive = new List<L2Sprite>(1000000);
-            hit = new List<L2Sprite>(1000000);
+            enemies = new List<L2Enemy>(1000000);
+            inactive = new List<L2Enemy>(1000000);
+            hit = new List<L2Enemy>(1000000);
             eTex = content.Load<Texture2D>("Textures\\eSpaceship");
 
             //player
             pTex = content.Load<Texture2D>("Textures\\pSpaceship");
             pSprite = new L2Player(pTex, new Vector2(pTex.Height / 2, pTex.Height / 2), new Vector2(300, 420), new Rectangle(0, 0, pTex.Width, pTex.Height), new Vector2(0, 0));
-            sbs.Add(pSprite);
 
             //sounds
             explode = content.Load<SoundEffect>("Sounds\\2explode");
@@ -105,10 +101,10 @@ namespace Snowy_Castle
 
         }
 
-        private L2Sprite CreateEnemy()
+        private L2Enemy CreateEnemy()
         {
             Random rand = new Random();
-            return new L2Sprite(eTex, new Vector2(15, 15), new Vector2((float)rand.Next(0, viewportRect.Width), (float)-30), new Rectangle(0, 0, eTex.Width, eTex.Height), new Vector2(0, 1));
+            return new L2Enemy(eTex, new Vector2(15, 15), new Vector2((float)rand.Next(0, viewportRect.Width), (float)-30), new Rectangle(0, 0, eTex.Width, eTex.Height), new Vector2(0, 1));
         }
 
         public override void UnloadContent()
@@ -122,6 +118,8 @@ namespace Snowy_Castle
             base.Update(gameTime, otherScreenHasFocus, false);
 
             background.Update(2);
+            pSprite.Update(gameTime, viewportRect);
+
 
             if (coveredByOtherScreen)
             {
@@ -142,7 +140,7 @@ namespace Snowy_Castle
                 if (elapsedTime > spawnTime)
                 {
                     elapsedTime -= spawnTime;
-                    sbs.Add(CreateEnemy());
+                    enemies.Add(CreateEnemy());
                     spawnTime = rand.Next(timeLeft*5, timeLeft * 10);
                 }
 
@@ -155,50 +153,44 @@ namespace Snowy_Castle
                 }
 
                 //check for collisions
-                foreach (L2Sprite s in sbs)
+                foreach (L2Enemy e in enemies)
                 {
-                    s.Update(gameTime, viewportRect);
-                    elapsedTime3 += gameTime.ElapsedGameTime.Milliseconds;
-                    rotationTime = rand.Next(1, 4);
+                    e.Update(gameTime, viewportRect);
 
-                    
-                 
+                    e.rotation = TurnToFace(e.getPos(), pSprite.getPos(), e.rotation, 0.025f);
 
-                    if (s != pSprite)
+                    enemyShoot(e);
+                    if (e.CollidesWith(pSprite))
                     {
-                        enemyShoot(s);
-                        if (s.CollidesWith(pSprite))
+                        if (!e.getLanded() && !e.getCollided())
                         {
-                            if (!s.getLanded() && !s.getCollided())
-                            {
-                                lives--;
-                                explode.Play();
-                                s.setCollided();
-                                hit.Add(s);
-                            }
-                        }
-
-                        foreach (Bullet b in goodBullets)
-                        {
-                            if (b.live)
-                            {
-                                if (b.CollidesWith(s))
-                                {
-                                    s.minusHealth();
-                                    if (s.getHealth() <= 0)
-                                    {
-                                        s.setCollided();
-                                        hit.Add(s);
-                                        explode.Play();
-                                        score += 25;
-                                    }
-                                    deadBullets.Add(b);
-                                }
-                            }
+                            lives--;
+                            explode.Play();
+                            e.setCollided();
+                            hit.Add(e);
                         }
                     }
 
-                    updateEvilBullets(s);
+                    foreach (Bullet b in goodBullets)
+                    {
+                        if (b.live)
+                        {
+                            if (b.CollidesWith(e))
+                            {
+                                e.minusHealth();
+                                if (e.getHealth() <= 0)
+                                {
+                                    e.setCollided();
+                                    hit.Add(e);
+                                    explode.Play();
+                                    score += 25;
+                                }
+                                deadBullets.Add(b);
+                            }
+                        }                        
+                    }
+
+                    updateEvilBullets(e);
                 }
 
                 if (timeLeft == 0)
@@ -213,7 +205,7 @@ namespace Snowy_Castle
                     SManager.AddScreen(new Loss2(), null);
                 }
 
-                foreach (L2Sprite s in sbs)
+                foreach (L2Enemy s in enemies)
                 {
                     if (s.getDie())
                     {
@@ -221,15 +213,14 @@ namespace Snowy_Castle
                     }
                 }
 
-
-                foreach (L2Sprite s in hit)
+                foreach (L2Enemy s in hit)
                 {
-                    sbs.Remove(s);
+                    enemies.Remove(s);
                 }
 
-                foreach (L2Sprite s in inactive)
+                foreach (L2Enemy s in inactive)
                 {
-                    sbs.Remove(s);
+                    enemies.Remove(s);
                 }
 
                 foreach (Bullet b in deadBullets)
@@ -244,7 +235,7 @@ namespace Snowy_Castle
         public void playerShoot()
         {
             Bullet newBullet = new Bullet((content.Load<Texture2D>("Textures\\pBullet")));
-            newBullet.velocity = new Vector2((float)Math.Sin(rotation), (float)Math.Cos(rotation)) * new Vector2(5f, -5f) + pSprite.getVel();
+            newBullet.velocity = new Vector2((float)Math.Sin(pSprite.getRotation()), (float)Math.Cos(pSprite.getRotation())) * new Vector2(5f, -5f) + pSprite.getVel();
             newBullet.screenPos = pSprite.getPos() + newBullet.velocity * 5;
             newBullet.live = true;
 
@@ -325,27 +316,55 @@ namespace Snowy_Castle
 
             if (keyboardState.IsKeyDown(Keys.Left) || gamePadState.ThumbSticks.Right.X < 0)
             {
-                if (rotation < -0.8)
+                if (pSprite.getRotation() < -0.8)
                 {
-                    rotation = (float)-0.8;
+                    pSprite.rotation = (float)-0.8;
                 }
                 else
                 {
-                    rotation -= 0.05f;
+                    pSprite.rotation -= 0.05f;
                 }
             }
 
             if (keyboardState.IsKeyDown(Keys.Right) || gamePadState.ThumbSticks.Right.X > 0)
             {
-                if (rotation > 0.8)
+                if (pSprite.getRotation() > 0.8)
                 {
-                    rotation = (float)0.8;
+                    pSprite.rotation = (float)0.8;
                 }
                 else
                 {
-                    rotation += 0.05f;
+                    pSprite.rotation += 0.05f;
                 }
             }
+        }
+
+        public static float TurnToFace(Vector2 pos, Vector2 faceThis, float currentAngle, float turnSpeed)
+        {
+
+            float x = faceThis.X - pos.X;
+            float y = faceThis.Y - pos.Y;
+
+            float desiredAngle = (float)Math.Atan2(y, x);
+
+            float difference = WrapAngle(desiredAngle - currentAngle);
+
+            difference = MathHelper.Clamp(difference, -turnSpeed, turnSpeed);
+
+            return WrapAngle(currentAngle + difference);
+        }
+
+        public static float WrapAngle(float radians)
+        {
+            while (radians < -MathHelper.Pi)
+            {
+                radians += MathHelper.TwoPi;
+            }
+            while (radians > MathHelper.Pi)
+            {
+                radians -= MathHelper.TwoPi;
+            }
+            return radians;
         }
         #endregion
 
@@ -359,16 +378,11 @@ namespace Snowy_Castle
             spriteBatch.DrawString(periclesFont, (scoreString + score), textPosition, Color.Red);
             spriteBatch.DrawString(periclesFont, (livesString + lives), textPosition2, Color.Red);
 
-            foreach (L2Sprite s in sbs)
-            {
-                if (s == pSprite)
-                {
-                    s.Draw(gameTime, spriteBatch, Color.White, rotation);
-                }
-                else
-                {
-                    s.Draw(gameTime, spriteBatch, Color.White);
-                }
+            pSprite.Draw(gameTime, spriteBatch, Color.White, pSprite.rotation);
+
+            foreach (L2Enemy s in enemies)
+            {               
+                s.Draw(gameTime, spriteBatch, Color.White, s.rotation);
             }
 
             foreach (Bullet b in goodBullets)
@@ -388,5 +402,6 @@ namespace Snowy_Castle
             base.Draw(gameTime);
         }
         #endregion
+
     }
 }

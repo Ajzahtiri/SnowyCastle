@@ -42,6 +42,11 @@ namespace Snowy_Castle
         }
 
         #region Get/sets
+        public bool getDie()
+        {
+            return toDie;
+        }
+
         public void setRotation(float f)
         {
             this.rotation += f;
@@ -144,7 +149,6 @@ namespace Snowy_Castle
             //right
             if (screenPos.X + sourceRect.Width / 2 > viewportRect.Right)
             {
-               // velocity.X *= -1;
                 screenPos.X = viewportRect.Left + sourceRect.Width / 2;
             }
 
@@ -160,7 +164,6 @@ namespace Snowy_Castle
             //left
             if (screenPos.X < viewportRect.Left + sourceRect.Width / 2)
             {
-              //  velocity.X *= -1;
                 screenPos.X = viewportRect.Right - sourceRect.Width / 2;
             }
 
@@ -170,20 +173,6 @@ namespace Snowy_Castle
                 velocity.Y *= -1;
                 screenPos.Y = viewportRect.Top + sourceRect.Width / 2;
             }
-
-
-        }
-
-        public virtual void Draw(GameTime gameTime, SpriteBatch sb, Color col, float rotation)
-        {
-            if (!facingBackwards)
-            {
-                sb.Draw(texture, screenPos, sourceRect, col, rotation, centre, this.size, SpriteEffects.FlipHorizontally, 0);
-            }
-            else
-            {
-                sb.Draw(texture, screenPos, sourceRect, col, rotation, centre, this.size, SpriteEffects.None, 0);
-            }
         }
 
         public virtual void Draw(GameTime gameTime, SpriteBatch sb, Color col)
@@ -191,9 +180,9 @@ namespace Snowy_Castle
             sb.Draw(texture, screenPos, sourceRect, col, rotation, centre, this.size, SpriteEffects.None, 0);
         }
 
-        public bool getDie()
+        public virtual void Draw(GameTime gameTime, SpriteBatch sb, Color col, float rot)
         {
-            return toDie;
+            sb.Draw(texture, screenPos, sourceRect, col, rot, centre, this.size, SpriteEffects.None, 0);
         }
     }
 }

@@ -48,6 +48,11 @@ namespace Snowy_Castle
 
             }
         }
+
+        public override void Draw(GameTime gameTime, SpriteBatch sb, Color col, float rot)
+        {
+            sb.Draw(texture, screenPos, sourceRect, col, rot, centre, this.size, SpriteEffects.None, 0);
+        }
     }
 }
 
