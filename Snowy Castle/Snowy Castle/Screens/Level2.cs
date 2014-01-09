@@ -269,7 +269,7 @@ namespace Snowy_Castle
         public void enemyShoot(L2Sprite enemy)
         {
             Bullet newB = new Bullet((content.Load<Texture2D>("Textures\\eBullet")), enemy);
-            newB.velocity = new Vector2((float)Math.Sin(enemy.rotation), (float)Math.Cos(enemy.rotation)) * new Vector2(0f, 4f);
+            newB.velocity = new Vector2((float)Math.Sin(enemy.rotation), (float)Math.Cos(enemy.rotation)) * new Vector2(5f, 4f);
             newB.screenPos = enemy.getPos() + newB.velocity * 3;
             newB.live = true;
 
