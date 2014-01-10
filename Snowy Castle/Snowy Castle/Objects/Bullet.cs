@@ -49,6 +49,7 @@ namespace Snowy_Castle
             {
                 velocity.Y *= 0;
                 velocity.X *= 0;
+                screenPos = new Vector2(viewportRect.Bottom + 50, screenPos.Y);
                 live = false;
             }
 

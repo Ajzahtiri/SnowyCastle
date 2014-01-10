@@ -21,7 +21,7 @@ namespace Snowy_Castle
         Rectangle viewportRect;
         ContentManager content;
         private int score;
-        private int lives = 5;
+        private int lives = 25;
         float pauseGradient;
 
         //time
@@ -45,7 +45,7 @@ namespace Snowy_Castle
         private List<L2Enemy> enemies, inactive, hit;
         private List<Bullet> goodBullets = new List<Bullet>(100);
         private List<Bullet> deadBullets = new List<Bullet>(10000000);
-        private List<Bullet> evilBullets = new List<Bullet>(100);
+        private List<Bullet> evilBullets = new List<Bullet>(10);
 
         //sounds
         private SoundEffect explode, shoot;
@@ -141,7 +141,7 @@ namespace Snowy_Castle
                 {
                     elapsedTime -= spawnTime;
                     enemies.Add(CreateEnemy());
-                    spawnTime = rand.Next(timeLeft*5, timeLeft * 10);
+                    spawnTime = rand.Next(timeLeft * 5, timeLeft * 10);
                 }
 
                 //update time counter
@@ -157,7 +157,31 @@ namespace Snowy_Castle
                 {
                     e.Update(gameTime, viewportRect);
 
-                    e.rotation = TurnToFace(e.getPos(), pSprite.getPos(), e.rotation, 0.025f);
+                    if (e.getPos().X > pSprite.getPos().X)
+                    {
+                        if (e.getRotation() > 0.6)
+                        {
+                            e.rotation = (float)0.6;
+                        }
+                        else
+                        {
+                            e.rotation += 0.005f;
+                        }
+                    }
+
+                    if (e.getPos().X < pSprite.getPos().X)
+                    {
+                        if (e.getRotation() < -0.6)
+                        {
+                            e.rotation = (float)-0.6;
+                        }
+                        else
+                        {
+                            e.rotation -= 0.005f;
+                        }
+                    }
+
+                    
 
                     enemyShoot(e);
                     if (e.CollidesWith(pSprite))
@@ -188,6 +212,22 @@ namespace Snowy_Castle
                                 deadBullets.Add(b);
                             }
                         }                        
+                    }
+
+                    foreach (Bullet b in evilBullets)
+                    {
+                        if (b.live)
+                        {
+                            if (b.CollidesWith(e))
+                            {
+                                deadBullets.Add(b);
+                            }
+
+                            if (b.CollidesWith(pSprite))
+                            {
+                                lives--;
+                            }
+                        }
                     }
 
                     updateEvilBullets(e);
@@ -269,7 +309,7 @@ namespace Snowy_Castle
         public void enemyShoot(L2Sprite enemy)
         {
             Bullet newB = new Bullet((content.Load<Texture2D>("Textures\\eBullet")), enemy);
-            newB.velocity = new Vector2((float)Math.Sin(enemy.rotation), (float)Math.Cos(enemy.rotation)) * new Vector2(5f, 4f);
+            newB.velocity = new Vector2((float)Math.Sin(enemy.rotation), (float)Math.Cos(enemy.rotation)) * new Vector2(-5f, 4f);
             newB.screenPos = enemy.getPos() + newB.velocity * 3;
             newB.live = true;
 
@@ -316,9 +356,9 @@ namespace Snowy_Castle
 
             if (keyboardState.IsKeyDown(Keys.Left) || gamePadState.ThumbSticks.Right.X < 0)
             {
-                if (pSprite.getRotation() < -0.8)
+                if (pSprite.getRotation() < -1.2)
                 {
-                    pSprite.rotation = (float)-0.8;
+                    pSprite.rotation = (float)-1.2;
                 }
                 else
                 {
@@ -328,9 +368,9 @@ namespace Snowy_Castle
 
             if (keyboardState.IsKeyDown(Keys.Right) || gamePadState.ThumbSticks.Right.X > 0)
             {
-                if (pSprite.getRotation() > 0.8)
+                if (pSprite.getRotation() > 1.2)
                 {
-                    pSprite.rotation = (float)0.8;
+                    pSprite.rotation = (float)1.2;
                 }
                 else
                 {
@@ -338,34 +378,7 @@ namespace Snowy_Castle
                 }
             }
         }
-
-        public static float TurnToFace(Vector2 pos, Vector2 faceThis, float currentAngle, float turnSpeed)
-        {
-
-            float x = faceThis.X - pos.X;
-            float y = faceThis.Y - pos.Y;
-
-            float desiredAngle = (float)Math.Atan2(y, x);
-
-            float difference = WrapAngle(desiredAngle - currentAngle);
-
-            difference = MathHelper.Clamp(difference, -turnSpeed, turnSpeed);
-
-            return WrapAngle(currentAngle + difference);
-        }
-
-        public static float WrapAngle(float radians)
-        {
-            while (radians < -MathHelper.Pi)
-            {
-                radians += MathHelper.TwoPi;
-            }
-            while (radians > MathHelper.Pi)
-            {
-                radians -= MathHelper.TwoPi;
-            }
-            return radians;
-        }
+  
         #endregion
 
         #region Draw
