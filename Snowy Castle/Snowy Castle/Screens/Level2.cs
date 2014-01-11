@@ -23,6 +23,11 @@ namespace Snowy_Castle
         private int score;
         float pauseGradient;
 
+        //healthbar
+        int health = 100;
+        private Texture2D healthBar;
+        private Color healthColor = Color.Green;
+
         //time
         private int elapsedTime = 0;
         private int elapsedTime2 = 0;
@@ -57,7 +62,6 @@ namespace Snowy_Castle
         Vector2 textPosition2 = new Vector2(10, 40);
         Vector2 textPosition3 = new Vector2(10, 70);
         String scoreString = "Score: ";
-        String livesString = "Lives: ";
 
         public Level2()
         {
@@ -79,6 +83,7 @@ namespace Snowy_Castle
             Texture2D bg = content.Load<Texture2D>("Textures\\space");
             background.Load(SManager.GraphicsDevice, bg);
             viewportRect = new Rectangle(0, 0, SManager.GraphicsDevice.Viewport.Width, SManager.GraphicsDevice.Viewport.Height);
+            healthBar = content.Load<Texture2D>("Textures\\2health");
 
             //enemies
             enemies = new List<L2Enemy>(1000000);
@@ -105,7 +110,7 @@ namespace Snowy_Castle
         private L2Enemy CreateEnemy()
         {
             Random rand = new Random();
-            return new L2Enemy(eTex, new Vector2(15, 15), new Vector2((float)rand.Next(0, viewportRect.Width), (float)-30), new Rectangle(0, 0, eTex.Width, eTex.Height), new Vector2(0, 1));
+            return new L2Enemy(eTex, new Vector2(15, 15), new Vector2((float)rand.Next(30, viewportRect.Width-30), (float)-30), new Rectangle(0, 0, eTex.Width, eTex.Height), new Vector2(0, 1));
         }
 
         public override void UnloadContent()
@@ -164,9 +169,9 @@ namespace Snowy_Castle
                     #region Rotate Enemies
                     if (e.getPos().X > pSprite.getPos().X)
                     {
-                        if (e.getRotation() > 0.6)
+                        if (e.getRotation() > 1.5)
                         {
-                            e.rotation = (float)0.6;
+                            e.rotation = (float)1.5;
                         }
                         else
                         {
@@ -176,9 +181,9 @@ namespace Snowy_Castle
 
                     if (e.getPos().X < pSprite.getPos().X)
                     {
-                        if (e.getRotation() < -0.6)
+                        if (e.getRotation() < -1.5)
                         {
-                            e.rotation = (float)-0.6;
+                            e.rotation = (float)-1.5;
                         }
                         else
                         {
@@ -192,6 +197,7 @@ namespace Snowy_Castle
                         if (!e.getLanded() && !e.getCollided())
                         {
                             pSprite.deHealth();
+                            health--;
                             explode.Play();
                             e.setCollided();
                             hit.Add(e);
@@ -232,14 +238,34 @@ namespace Snowy_Castle
                             if (b.CollidesWith(pSprite))
                             {
                                 pSprite.deHealth();
+                                health--;
                                 b.live = false;
                                 damage.Play();
                             }
                         }
                     }
+                    health = (int)MathHelper.Clamp(health, 0, 100);
                     updateEvilBullets(e);
                 }
                             #endregion
+                #region Update Healthbar Colour
+                if (health < 100 && health > 75)
+                {
+                    healthColor = Color.Green;
+                }
+                else if (health < 76 && health > 50)
+                {
+                    healthColor = Color.Yellow;
+                }
+                else if (health < 51 && health > 25)
+                {
+                    healthColor = Color.Orange;
+                }
+                else if (health < 26 && health > 0)
+                {
+                    healthColor = Color.Red;
+                }
+                #endregion
                 #region Check for Victory
                 if (timeLeft == 0)
                 {
@@ -397,7 +423,11 @@ namespace Snowy_Castle
             spriteBatch.Begin();
             background.Draw(spriteBatch);
             spriteBatch.DrawString(periclesFont, (scoreString + score), textPosition, Color.Red);
-            spriteBatch.DrawString(periclesFont, (livesString + pSprite.getLives()), textPosition2, Color.Red);
+
+            spriteBatch.Draw(healthBar, textPosition2, new Rectangle(0, 45, healthBar.Width, 26), Color.Gray);
+            spriteBatch.Draw(healthBar, new Rectangle(10, 40, (int)(healthBar.Width * ((double)health / 100)), 26),
+                            new Rectangle(0, 45, healthBar.Width, 26), healthColor);
+            spriteBatch.Draw(healthBar, textPosition2, new Rectangle(0, 0, healthBar.Width, 26), Color.White);
 
             pSprite.Draw(gameTime, spriteBatch, Color.White, pSprite.rotation);
 
