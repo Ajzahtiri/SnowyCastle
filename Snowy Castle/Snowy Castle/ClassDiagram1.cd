@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" GroupingSetting="Access" MembersFormat="NameAndType">
+  <Class Name="Snowy_Castle.Background" Collapsed="true">
+    <Position X="8.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAwAgEAAAABAAgAAAAAAACAAAAACAAAAAAAAQAAAAAA=</HashCode>
+      <FileName>Objects\Background.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Snowy_Castle.Bullet" Collapsed="true">
+    <Position X="10" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AA0AAAAAAAAAAgAAAAAABAAAAGACAgAAAAQAAAAAAAI=</HashCode>
+      <FileName>Objects\Bullet.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Snowy_Castle.L1Player" Collapsed="true">
+    <Position X="5.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAgQAAAAAAAABAAAAAAAEgAAAACAAAAQAQAAA=</HashCode>
+      <FileName>Objects\L1Player.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Snowy_Castle.L1Sprite" Collapsed="true">
+    <Position X="5.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQARAAQFAAgBwAAAIAABgAAAGAKQoAIAAUAAAAhAAg=</HashCode>
+      <FileName>Objects\L1Sprite.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Snowy_Castle.L2Enemy" Collapsed="true">
+    <Position X="2.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Objects\L2Enemy.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Snowy_Castle.L2Player" Collapsed="true">
+    <Position X="0.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAgAAAAAAAAAAAAAgAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Objects\L2Player.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Snowy_Castle.L2Sprite" Collapsed="true">
+    <Position X="1.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACQARIAQFAAgBwAACKCABAAACGAKQgAIACUAAAgBAAg=</HashCode>
+      <FileName>Objects\L2Sprite.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Snowy_Castle.Program" Collapsed="true">
+    <Position X="11.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAwAAAAAAAAAAAAAAAAgAAAAABEAAAAQ=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Snowy_Castle.backgroundScreen" Collapsed="true">
+    <Position X="5.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQCEAAAAAAAAgAAAAAAACAAAAAAAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>ScreenManager\backgroundScreen.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Snowy_Castle.gameScreen" Collapsed="true">
+    <Position X="10.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EgQAEBKAAAAAAggAIAQAAIIEAAAAAAgECgIAKCAAAAY=</HashCode>
+      <FileName>ScreenManager\gameScreen.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Snowy_Castle.inputState" Collapsed="true">
+    <Position X="11.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABUAAAAAgBAAAABAAAAAAEAAAAAABAIAAAIAACABAQA=</HashCode>
+      <FileName>ScreenManager\inputState.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Snowy_Castle.menuItem" Collapsed="true">
+    <Position X="8.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAQgAAAAAAAAAgAgAAAAIAAAAAQAQAAIAAAACAgAAAA=</HashCode>
+      <FileName>ScreenManager\menuItem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Snowy_Castle.menuScreen" Collapsed="true">
+    <Position X="13.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CQQAACGAAAAAAgAAAAAAoAAAAAAAAAAAAAAAAgQAAAQ=</HashCode>
+      <FileName>ScreenManager\menuScreen.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Snowy_Castle.playerEvent" Collapsed="true">
+    <Position X="10" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ScreenManager\playerEvent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Snowy_Castle.screenManager" Collapsed="true">
+    <Position X="8.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAQAVAAAAAAgAwAAAAAAAAAAAAAAiBAURAAAAAACKEQ=</HashCode>
+      <FileName>ScreenManager\screenManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Snowy_Castle.Level1" Collapsed="true">
+    <Position X="1.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ICUGEECAAUAAEhASgAAIAAhEAEAAACCgBQABYQAEIAw=</HashCode>
+      <FileName>Screens\Level1.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Snowy_Castle.Level2" Collapsed="true">
+    <Position X="3.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>YCQCFECECQABkgAACQAMAAwEAAAAACgBBNQAQAIUIAw=</HashCode>
+      <FileName>Screens\Level2.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Snowy_Castle.Loss1" Collapsed="true">
+    <Position X="14.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAACAAAAA=</HashCode>
+      <FileName>Screens\Loss1.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Snowy_Castle.Loss2" Collapsed="true">
+    <Position X="19.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAACAAAAA=</HashCode>
+      <FileName>Screens\Loss2.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Snowy_Castle.MainMenu" Collapsed="true">
+    <Position X="8" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Screens\MainMenu.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Snowy_Castle.PauseMenu" Collapsed="true">
+    <Position X="10.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Screens\PauseMenu.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Snowy_Castle.Victory1" Collapsed="true">
+    <Position X="12.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAACAAAAA=</HashCode>
+      <FileName>Screens\Victory1.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Snowy_Castle.Victory2" Collapsed="true">
+    <Position X="17" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAA=</HashCode>
+      <FileName>Screens\Victory2.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="Snowy_Castle.screenState" Collapsed="true">
+    <Position X="8.25" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAEAIA=</HashCode>
+      <FileName>ScreenManager\gameScreen.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
