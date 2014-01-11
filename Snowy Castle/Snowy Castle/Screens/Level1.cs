@@ -166,19 +166,7 @@ namespace Snowy_Castle
                             ouch.Play();
                             s.setCollided();
                             hit.Add(s);
-
-                            GamePad.SetVibration(PlayerIndex.One, 1, 1);
-                            DateTime vibe;
-
-                            vibe = DateTime.Now;
-
-                            TimeSpan vibed = DateTime.Now - vibe;
-
-                            if (vibed.TotalSeconds >= 1.0)
-                            {
-                                GamePad.SetVibration(PlayerIndex.One, 0, 0);                                
-                            }
-                        }                       
+                        }
 
                         if (s.getLanded() && !s.getPlayed())
                         {
