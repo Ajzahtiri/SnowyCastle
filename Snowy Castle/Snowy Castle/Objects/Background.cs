@@ -33,7 +33,7 @@ namespace Snowy_Castle
         {
             if (screenPos.Y < screenHeight)
             {
-                b.Draw(myBg, screenPos, null, Color.White, 0, center, 1, SpriteEffects.None, 1f);
+                b.Draw(myBg, screenPos, null, Color.White, 0, center, 1, SpriteEffects.None, 0f);
             }
             b.Draw(myBg, screenPos - bgSize, null, Color.White, 0, center, 1, SpriteEffects.None, 0f);
         }

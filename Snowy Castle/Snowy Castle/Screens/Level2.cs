@@ -116,12 +116,12 @@ namespace Snowy_Castle
         #region Updates
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
+            #region Update
             base.Update(gameTime, otherScreenHasFocus, false);
-
             background.Update(2);
             pSprite.Update(gameTime, viewportRect);
-
-
+            #endregion
+            #region Pause Gradient
             if (coveredByOtherScreen)
             {
                 pauseGradient = Math.Min(pauseGradient + 1f / 32, 1);
@@ -130,36 +130,38 @@ namespace Snowy_Castle
             {
                 pauseGradient = Math.Max(pauseGradient - 1f / 32, 0);
             }
-
+            #endregion
+            #region Spawn Enemy Timer
             if (active)
             {
                 Random rand = new Random();
                 elapsedTime += gameTime.ElapsedGameTime.Milliseconds;
                 elapsedTime2 += gameTime.ElapsedGameTime.Milliseconds;
 
-                //spawn enemy timer
                 if (elapsedTime > spawnTime)
                 {
                     elapsedTime -= spawnTime;
                     enemies.Add(CreateEnemy());
                     spawnTime = rand.Next(timeLeft * 5, timeLeft * 10);
                 }
+            #endregion
+                #region Update Time Left (not visible)
 
-                //update time counter
                 if (elapsedTime2 > secondTime)
                 {
                     elapsedTime2 -= secondTime;
                     timeLeft--;
                     score++;
                 }
-
-                //check for collisions
+                #endregion
+                #region Shoot Enemies
                 foreach (L2Enemy e in enemies)
                 {
                     e.Update(gameTime, viewportRect);
 
                     enemyShoot(e);
-
+                #endregion
+                    #region Rotate Enemies
                     if (e.getPos().X > pSprite.getPos().X)
                     {
                         if (e.getRotation() > 0.6)
@@ -183,7 +185,8 @@ namespace Snowy_Castle
                             e.rotation -= 0.005f;
                         }
                     }
-
+                    #endregion
+                    #region Check for Enemy crashing into Player
                     if (e.CollidesWith(pSprite))
                     {
                         if (!e.getLanded() && !e.getCollided())
@@ -194,7 +197,8 @@ namespace Snowy_Castle
                             hit.Add(e);
                         }
                     }
-
+                    #endregion
+                    #region Check for Good Bullets hitting Enemies
                     foreach (Bullet b in goodBullets)
                     {
                         if (b.live)
@@ -211,9 +215,10 @@ namespace Snowy_Castle
                                 }
                                 deadBullets.Add(b);
                             }
-                        }                        
+                        }
                     }
-
+                    #endregion
+                    #region Check for Evil Bullets hitting Enemies
                     foreach (Bullet b in evilBullets)
                     {
                         if (b.live)
@@ -222,29 +227,32 @@ namespace Snowy_Castle
                             {
                                 deadEvilBullets.Add(b);
                             }
-
+                    #endregion
+                            #region Check for Evil Bullets hitting Player
                             if (b.CollidesWith(pSprite))
                             {
                                 pSprite.deHealth();
+                                b.live = false;
                             }
                         }
                     }
-
                     updateEvilBullets(e);
                 }
-
+                            #endregion
+                #region Check for Victory
                 if (timeLeft == 0)
                 {
-                    SManager.AddScreen(new Victory2(score), null);                
+                    SManager.AddScreen(new Victory2(score), null);
                 }
-
-                //check for death
+                #endregion
+                #region Check for Loss
                 if (pSprite.getLives() <= 0)
                 {
                     explode.Play();
                     SManager.AddScreen(new Loss2(), null);
                 }
-
+                #endregion
+                #region Process Dead/Inactive Bullets + Enemies
                 foreach (L2Enemy s in enemies)
                 {
                     if (s.getDie())
@@ -269,7 +277,9 @@ namespace Snowy_Castle
                 }
             }
 
+
             updateBullets();
+                #endregion
         }
 
         public void playerShoot()
@@ -285,7 +295,6 @@ namespace Snowy_Castle
                 goodBullets.Add(newBullet);
             }
         }
-
         public void updateBullets()
         {
             foreach (Bullet b in goodBullets)
@@ -306,7 +315,6 @@ namespace Snowy_Castle
                 }
             }
         }
-
         public void enemyShoot(L2Sprite enemy)
         {
             Bullet newB = new Bullet((content.Load<Texture2D>("Textures\\eBullet")), enemy);
@@ -314,13 +322,12 @@ namespace Snowy_Castle
             newB.screenPos = enemy.getPos() + newB.velocity * 3;
             newB.live = true;
 
-            if (evilBullets.Count < 25)
+            if (evilBullets.Count < 5)
             {
                 shoot.Play();
                 evilBullets.Add(newB);
             }
         }
-
         public void updateEvilBullets(L2Sprite enemy)
         {
             foreach (Bullet b in evilBullets)
@@ -341,7 +348,6 @@ namespace Snowy_Castle
                 }
             }
         }        
-
         public override void HandleInput(inputState input)
         {
             KeyboardState keyboardState = input.currentKeyboardState;
@@ -384,7 +390,6 @@ namespace Snowy_Castle
         }
   
         #endregion
-
         #region Draw
         public override void Draw(GameTime gameTime)
         {
