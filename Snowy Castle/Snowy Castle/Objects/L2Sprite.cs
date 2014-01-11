@@ -13,9 +13,8 @@ namespace Snowy_Castle
         protected Vector2 centre, velocity, screenPos;
         protected Rectangle sourceRect;
         public float rotation;
+        protected int health;
         protected float size;
-        protected int health = 10;
-        private bool facingBackwards = true;
         protected bool hasCollided, hasLanded, hasPlayed, toDie;
 
         public L2Sprite(Texture2D tex, Vector2 centre, Vector2 pos, Rectangle sourceRect, Vector2 vel)
@@ -47,6 +46,16 @@ namespace Snowy_Castle
             return toDie;
         }
 
+        public void deHealth()
+        {
+            health--;
+        }
+
+        public int getLives()
+        {
+            return health;
+        }
+
         public void setRotation(float f)
         {
             this.rotation += f;
@@ -55,26 +64,6 @@ namespace Snowy_Castle
         public float getRotation()
         {
             return rotation;
-        }
-
-        public void minusHealth()
-        {
-            health--;
-        }
-
-        public int getHealth()
-        {
-            return health;
-        }
-
-        public void setBackwards(bool b)
-        {
-            this.facingBackwards = b;
-        }
-
-        public bool getBackwards()
-        {
-            return facingBackwards;
         }
 
         public bool getCollided()

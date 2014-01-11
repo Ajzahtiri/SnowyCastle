@@ -8,7 +8,7 @@ namespace Snowy_Castle
     {
         public L2Player(Texture2D tex, Vector2 centre, Vector2 pos, Rectangle sourceRect, Vector2 vel) : base(tex, centre, pos, sourceRect, vel)
         {
-
+            health = 25;
         }
 
         public override void Update(GameTime gameTime, Rectangle viewportRect)
@@ -31,7 +31,6 @@ namespace Snowy_Castle
             if (keyboardState.IsKeyDown(Keys.A))
             {
                 velocity.X -= 0.5f;
-                setBackwards(true);
             }
             if (keyboardState.IsKeyDown(Keys.D))
             {

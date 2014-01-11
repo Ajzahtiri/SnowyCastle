@@ -19,6 +19,7 @@ namespace Snowy_Castle
             this.velocity = vel;
             this.size = 1;
             this.toDie = false;
+            health = 5;
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch sb, Color col, float rotation)
