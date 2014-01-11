@@ -31,7 +31,7 @@ namespace Snowy_Castle
         private int elapsedTime = 0;
         private int secondTime = 1000;
         private int spawnTime = 2000;
-        private double darkTime = 50;
+        private int darkTime = 50;
 
         //background
         Texture2D background;
@@ -160,18 +160,25 @@ namespace Snowy_Castle
                     s.Update(gameTime, viewportRect);
                     if (s != pSprite)
                     {
-                        if (s.CollidesWith(pSprite))
-                        {
-                            if (!s.getLanded() && !s.getCollided())
+                        if (s.CollidesWith(pSprite) && !s.getLanded() && !s.getCollided())
+                        {                            
+                            score++;
+                            ouch.Play();
+                            s.setCollided();
+                            hit.Add(s);
+
+                            GamePad.SetVibration(PlayerIndex.One, 1, 1);
+                            DateTime vibe;
+
+                            vibe = DateTime.Now;
+
+                            TimeSpan vibed = DateTime.Now - vibe;
+
+                            if (vibed.TotalSeconds >= 1.0)
                             {
-                                score++;
-                                ouch.Play();
-                                s.setCollided();
-                                hit.Add(s);
-                                GamePad.SetVibration(PlayerIndex.One, 1, 1);                                
+                                GamePad.SetVibration(PlayerIndex.One, 0, 0);                                
                             }
                         }                       
-                        GamePad.SetVibration(PlayerIndex.One, 0, 0);
 
                         if (s.getLanded() && !s.getPlayed())
                         {

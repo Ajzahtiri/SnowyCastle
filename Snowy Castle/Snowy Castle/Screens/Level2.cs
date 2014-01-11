@@ -169,9 +169,9 @@ namespace Snowy_Castle
                     #region Rotate Enemies
                     if (e.getPos().X > pSprite.getPos().X)
                     {
-                        if (e.getRotation() > 1.5)
+                        if (e.getRotation() > 0.8)
                         {
-                            e.rotation = (float)1.5;
+                            e.rotation = (float)0.8;
                         }
                         else
                         {
@@ -181,9 +181,9 @@ namespace Snowy_Castle
 
                     if (e.getPos().X < pSprite.getPos().X)
                     {
-                        if (e.getRotation() < -1.5)
+                        if (e.getRotation() < -0.8)
                         {
-                            e.rotation = (float)-1.5;
+                            e.rotation = (float)-0.8;
                         }
                         else
                         {
