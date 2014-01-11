@@ -22,13 +22,16 @@ namespace Snowy_Castle
         private int score;
         private bool death;
         float pauseGradient;
-        Texture2D fadeRect;
+        int a = 255;
+        int b = 255;
+        int c = 255;
 
         //time
         private int counterTime = 0;
         private int elapsedTime = 0;
         private int secondTime = 1000;
         private int spawnTime = 2000;
+        private double darkTime = 50;
 
         //background
         Texture2D background;
@@ -73,8 +76,6 @@ namespace Snowy_Castle
             spriteBatch = new SpriteBatch(SManager.GraphicsDevice);
             background = content.Load<Texture2D>("Textures\\Winter_Castle");
             viewportRect = new Rectangle(0, 0, SManager.GraphicsDevice.Viewport.Width, SManager.GraphicsDevice.Viewport.Height);
-            fadeRect = new Texture2D(SManager.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
-            fadeRect.SetData(new[] { Color.White });
 
             //snowballs
             sbs = new List<L1Sprite>(100000);
@@ -213,9 +214,16 @@ namespace Snowy_Castle
                 }
                 #endregion
                 #region Fade to Black
-                if (countdown == 4)
+                if (countdown <= 4)
                 {
-                    fadeBlack(10.0f);
+                    darkTime -= gameTime.ElapsedGameTime.Milliseconds;
+                    if (darkTime <= 0)
+                    {
+                        darkTime = 30;
+                        a -= 2;
+                        b -= 2;
+                        c -= 2;
+                    }
                 }
                 #endregion
                 #region Check for Win
@@ -244,7 +252,7 @@ namespace Snowy_Castle
             SManager.GraphicsDevice.Clear(Color.CornflowerBlue);
 
             spriteBatch.Begin();
-            spriteBatch.Draw(background, viewportRect, Color.White);
+            spriteBatch.Draw(background, viewportRect, new Color(a, b, c));
             spriteBatch.DrawString(periclesFont, (textString + score + " snowballs"), textPosition, Color.Red);
             spriteBatch.DrawString(periclesFont, (textString2 + countdown), textPosition2, Color.Red);
 
@@ -255,13 +263,6 @@ namespace Snowy_Castle
             spriteBatch.End();
 
             base.Draw(gameTime);
-        }
-        
-        public void fadeBlack(float alpha)
-        {
-            spriteBatch.Begin();
-            spriteBatch.Draw(background, new Rectangle(0, 0, viewportRect.Width, viewportRect.Height), Color.Black * alpha);
-            spriteBatch.End();
         }
         #endregion
     }
