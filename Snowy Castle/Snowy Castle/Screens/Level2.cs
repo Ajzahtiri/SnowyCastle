@@ -42,14 +42,13 @@ namespace Snowy_Castle
 
         //lists 
         private List<L2Enemy> enemies, inactive, hit;
-        private List<Bullet> goodBullets = new List<Bullet>(10
-            );
+        private List<Bullet> goodBullets = new List<Bullet>(10);
         private List<Bullet> deadBullets = new List<Bullet>(10000000);
         private List<Bullet> evilBullets = new List<Bullet>(10);
         private List<Bullet> deadEvilBullets = new List<Bullet>(10);
 
         //sounds
-        private SoundEffect explode, shoot;
+        private SoundEffect explode, shoot, damage;
         private Song music;
 
         //text
@@ -94,6 +93,7 @@ namespace Snowy_Castle
             //sounds
             explode = content.Load<SoundEffect>("Sounds\\2explode");
             shoot = content.Load<SoundEffect>("Sounds\\2shoot");
+            damage = content.Load<SoundEffect>("Sounds\\2hit");
             music = content.Load<Song>("Sounds\\Epsilon Indi");
             MediaPlayer.Play(music);
 
@@ -233,6 +233,7 @@ namespace Snowy_Castle
                             {
                                 pSprite.deHealth();
                                 b.live = false;
+                                damage.Play();
                             }
                         }
                     }
@@ -281,7 +282,6 @@ namespace Snowy_Castle
             updateBullets();
                 #endregion
         }
-
         public void playerShoot()
         {
             Bullet newBullet = new Bullet((content.Load<Texture2D>("Textures\\pBullet")));
@@ -387,8 +387,7 @@ namespace Snowy_Castle
                     pSprite.rotation += 0.05f;
                 }
             }
-        }
-  
+        }  
         #endregion
         #region Draw
         public override void Draw(GameTime gameTime)
