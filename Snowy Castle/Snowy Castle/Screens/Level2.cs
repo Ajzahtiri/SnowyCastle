@@ -21,7 +21,6 @@ namespace Snowy_Castle
         Rectangle viewportRect;
         ContentManager content;
         private int score;
-        private int lives = 25;
         float pauseGradient;
 
         //time
@@ -43,9 +42,11 @@ namespace Snowy_Castle
 
         //lists 
         private List<L2Enemy> enemies, inactive, hit;
-        private List<Bullet> goodBullets = new List<Bullet>(100);
+        private List<Bullet> goodBullets = new List<Bullet>(10
+            );
         private List<Bullet> deadBullets = new List<Bullet>(10000000);
         private List<Bullet> evilBullets = new List<Bullet>(10);
+        private List<Bullet> deadEvilBullets = new List<Bullet>(10);
 
         //sounds
         private SoundEffect explode, shoot;
@@ -157,6 +158,8 @@ namespace Snowy_Castle
                 {
                     e.Update(gameTime, viewportRect);
 
+                    enemyShoot(e);
+
                     if (e.getPos().X > pSprite.getPos().X)
                     {
                         if (e.getRotation() > 0.6)
@@ -181,14 +184,11 @@ namespace Snowy_Castle
                         }
                     }
 
-                    
-
-                    enemyShoot(e);
                     if (e.CollidesWith(pSprite))
                     {
                         if (!e.getLanded() && !e.getCollided())
                         {
-                            lives--;
+                            pSprite.deHealth();
                             explode.Play();
                             e.setCollided();
                             hit.Add(e);
@@ -201,8 +201,8 @@ namespace Snowy_Castle
                         {
                             if (b.CollidesWith(e))
                             {
-                                e.minusHealth();
-                                if (e.getHealth() <= 0)
+                                e.deHealth();
+                                if (e.getLives() <= 0)
                                 {
                                     e.setCollided();
                                     hit.Add(e);
@@ -220,12 +220,12 @@ namespace Snowy_Castle
                         {
                             if (b.CollidesWith(e))
                             {
-                                deadBullets.Add(b);
+                                deadEvilBullets.Add(b);
                             }
 
                             if (b.CollidesWith(pSprite))
                             {
-                                lives--;
+                                pSprite.deHealth();
                             }
                         }
                     }
@@ -239,7 +239,7 @@ namespace Snowy_Castle
                 }
 
                 //check for death
-                if (lives <= 0)
+                if (pSprite.getLives() <= 0)
                 {
                     explode.Play();
                     SManager.AddScreen(new Loss2(), null);
@@ -279,8 +279,9 @@ namespace Snowy_Castle
             newBullet.screenPos = pSprite.getPos() + newBullet.velocity * 5;
             newBullet.live = true;
 
-            if (goodBullets.Count < 100)
+            if (goodBullets.Count < 10)
             {
+                shoot.Play();
                 goodBullets.Add(newBullet);
             }
         }
@@ -313,7 +314,11 @@ namespace Snowy_Castle
             newB.screenPos = enemy.getPos() + newB.velocity * 3;
             newB.live = true;
 
-            evilBullets.Add(newB);
+            if (evilBullets.Count < 25)
+            {
+                shoot.Play();
+                evilBullets.Add(newB);
+            }
         }
 
         public void updateEvilBullets(L2Sprite enemy)
@@ -351,7 +356,6 @@ namespace Snowy_Castle
             if (keyboardState.IsKeyDown(Keys.Space) || gamePadState.Triggers.Right > 0)
             {
                 playerShoot();
-                shoot.Play();
             }
 
             if (keyboardState.IsKeyDown(Keys.Left) || gamePadState.ThumbSticks.Right.X < 0)
@@ -389,7 +393,7 @@ namespace Snowy_Castle
             spriteBatch.Begin();
             background.Draw(spriteBatch);
             spriteBatch.DrawString(periclesFont, (scoreString + score), textPosition, Color.Red);
-            spriteBatch.DrawString(periclesFont, (livesString + lives), textPosition2, Color.Red);
+            spriteBatch.DrawString(periclesFont, (livesString + pSprite.getLives()), textPosition2, Color.Red);
 
             pSprite.Draw(gameTime, spriteBatch, Color.White, pSprite.rotation);
 
