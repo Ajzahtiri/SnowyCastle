@@ -8,7 +8,7 @@ namespace Snowy_Castle
     {
         public L2Player(Texture2D tex, Vector2 centre, Vector2 pos, Rectangle sourceRect, Vector2 vel) : base(tex, centre, pos, sourceRect, vel)
         {
-            health = 25;
+            health = 100;
         }
 
         public override void Update(GameTime gameTime, Rectangle viewportRect)
